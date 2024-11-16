@@ -5,6 +5,7 @@ import (
 	redisrepository "awesomeProject/internal/infastructure/repository/redis"
 	token2 "awesomeProject/internal/infastructure/token"
 	authusecase "awesomeProject/internal/usecase/auth"
+	notificationusecase "awesomeProject/internal/usecase/notification"
 	"context"
 	"errors"
 	"fmt"
@@ -15,18 +16,21 @@ import (
 )
 
 type Auth struct {
-	logger    *slog.Logger
-	repoRedis *redisrepository.RedisUserRepository
-	auth      *authusecase.AuthDbUseCaseImpl
+	logger       *slog.Logger
+	repoRedis    *redisrepository.RedisUserRepository
+	auth         *authusecase.AuthDbUseCaseImpl
+	notification *notificationusecase.NotificationUseCase
 }
 
 func NewAuth(logger *slog.Logger,
 	repoRedis *redisrepository.RedisUserRepository,
-	auth *authusecase.AuthDbUseCaseImpl) *Auth {
+	auth *authusecase.AuthDbUseCaseImpl,
+	notification *notificationusecase.NotificationUseCase) *Auth {
 	return &Auth{
-		logger:    logger,
-		repoRedis: repoRedis,
-		auth:      auth,
+		logger:       logger,
+		repoRedis:    repoRedis,
+		auth:         auth,
+		notification: notification,
 	}
 }
 
@@ -91,12 +95,18 @@ func (a *Auth) VerifyUser(ctx context.Context, req entity.VerifyUserRequest) (en
 		Password: string(passwordHash),
 		Role:     user.Role,
 	})
-
 	if err != nil {
 		log.Error("err", err.Error())
 		return entity.User{}, err
 	}
 
+	err = a.notification.CreateNotification(ctx, &entity.CreateNotification{
+		UserId: savedUser.ID,
+	})
+	if err != nil {
+		log.Error("err", err.Error())
+		return entity.User{}, err
+	}
 	return *savedUser, nil
 }
 

@@ -27,11 +27,12 @@ type Config struct {
 	}
 	RedisURL string
 	DB       struct {
-		Host     string
-		Port     string
-		Name     string
-		User     string
-		Password string
+		Host           string
+		Port           string
+		Name           string
+		User           string
+		Password       string
+		CollectionName string
 	}
 	NotificationUrl string
 
@@ -64,6 +65,12 @@ func Token() string {
 func New() *Config {
 	var config Config
 
+	config.DB.CollectionName = "notifications"
+	config.DB.Host = getEnv("DB_HOST", "localhost")
+	config.DB.Port = getEnv("DB_PORT", "5432")
+	config.DB.User = getEnv("DB_USER", "postgres")
+	config.DB.Password = getEnv("DB_PASSWORD", "postgres")
+	config.DB.Name = getEnv("DB_NAME", "notification")
 	config.APP = getEnv("APP", "app")
 	config.Environment = getEnv("ENVIRONMENT", "develop")
 	config.LogLevel = getEnv("LOG_LEVEL", "local")
@@ -85,15 +92,6 @@ func New() *Config {
 	config.UserUrl = getEnv("User_URL", "user_service:9000")
 	config.NotificationUrl = getEnv("Notification_URL", "notification_service:9001")
 	config.RedisURL = getEnv("REDIS_URL", "redis:6379")
-
-	config.MessageBrokerUses.URL = getEnv("KAFKA_URL", "broker:29092")
-	config.MessageBrokerUses.Topic = getEnv("MESSAGE_BROKER_USE_TOKEN", "USER_SERVICE")
-	config.MessageBrokerUses.Keys.Create = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "CREATE"))
-	config.MessageBrokerUses.Keys.Delete = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "DELETE"))
-	config.MessageBrokerUses.Keys.Update = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "UPDATE"))
-	config.MessageBrokerUses.Keys.UpdateEmail = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "UPDATE_EMAIL"))
-	config.MessageBrokerUses.Keys.UpdatePassword = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "UPDATE_PASSWORD"))
-	config.MessageBrokerUses.TopicBooking = getEnv("MESSAGE_BROKER_USE_TOKEN", "USER_SERVICE")
 
 	config.MessageBrokerUses.TopicIncome = getEnv("MESSAGE_BROKER_USE_TOKEN", "incomeexpenses17")
 	config.MessageBrokerUses.IncomeCreate = getEnv("MESSAGE_BROKER_USE_KEY", "incomecreate")

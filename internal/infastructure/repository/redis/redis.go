@@ -79,3 +79,11 @@ func (r *RedisUserRepository) DeleteFromCache(ctx context.Context, key string) e
 	}
 	return nil
 }
+
+func (r *RedisUserRepository) Check(ctx context.Context) error {
+	err := r.redisClient.Publish(ctx, "notifications", "check").Err()
+	if err != nil {
+		return err
+	}
+	return nil
+}
