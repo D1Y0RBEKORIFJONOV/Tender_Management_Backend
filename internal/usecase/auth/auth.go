@@ -7,7 +7,7 @@ import (
 
 type userUseCase interface {
 	RegisterUser(ctx context.Context, req entity.CreateUsrRequest) (message string, err error)
-	VerifyUser(ctx context.Context, req entity.VerifyUserRequest) (entity.VerifyUserResponse, error)
+	VerifyUser(ctx context.Context, req entity.VerifyUserRequest) (entity.User, error)
 	LoginUser(ctx context.Context, req entity.LoginRequest) (entity.LoginResponse, error)
 }
 
@@ -23,7 +23,7 @@ func (u *UserUseCaseImpl) RegisterUser(ctx context.Context, req entity.CreateUsr
 	return u.userRepository.RegisterUser(ctx, req)
 }
 
-func (u *UserUseCaseImpl) VerifyUser(ctx context.Context, req entity.VerifyUserRequest) (entity.VerifyUserResponse, error) {
+func (u *UserUseCaseImpl) VerifyUser(ctx context.Context, req entity.VerifyUserRequest) (entity.User, error) {
 	return u.userRepository.VerifyUser(ctx, req)
 }
 
