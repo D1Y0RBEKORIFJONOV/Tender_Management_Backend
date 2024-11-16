@@ -35,8 +35,7 @@ type (
 		NewStatus string `json:"new_status"`
 	}
 	DeleteTenderRequest struct {
-		ID        string `json:"id"`
-		ClientID  string `json:"client_id"`
-		NewStatus string `json:"new_status"`
+		ID       string `json:"id"`
+		ClientID string `json:"client_id"`
 	}
 )

@@ -79,12 +79,19 @@ func (a *Auth) VerifyUser(ctx context.Context, req entity.VerifyUserRequest) (en
 		return entity.User{}, errors.New("invalid secret code")
 	}
 
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Error("err", err.Error())
+		return entity.User{}, err
+	}
+
 	savedUser, err := a.auth.SaveUser(ctx, &entity.CreateUsrRequest{
 		Username: user.Username,
 		Email:    user.Email,
-		Password: user.Password,
+		Password: string(passwordHash),
 		Role:     user.Role,
 	})
+
 	if err != nil {
 		log.Error("err", err.Error())
 		return entity.User{}, err
