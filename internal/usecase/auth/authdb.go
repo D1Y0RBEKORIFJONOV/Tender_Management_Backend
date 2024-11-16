@@ -7,11 +7,8 @@ import (
 
 type authDbUseCase interface {
 	SaveUser(ctx context.Context, req *entity.CreateUsrRequest) (*entity.User, error)
-<<<<<<< HEAD
-=======
 	IsHaveUser(ctx context.Context, byEmail string) (bool, error)
 	GetUserByEmail(ctx context.Context, byEmail string) (*entity.User, error)
->>>>>>> 6c8b0e566a8d416c964293b537a49acb252a534b
 }
 
 type AuthDbUseCaseImpl struct {
