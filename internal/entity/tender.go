@@ -26,6 +26,8 @@ type (
 	GetListTender struct {
 		Limit int
 		Page  int
+		Field string
+		Value string
 	}
 	UpdateTenderStatusRequest struct {
 		ID        string `json:"id"`

@@ -13,6 +13,12 @@ type Config struct {
 	Context     struct {
 		Timeout string
 	}
+	Email struct {
+		From     string
+		Password string
+		SmtHost  string
+		SmtPort  string
+	}
 	UserUrl string
 	Token   struct {
 		Secret     string
@@ -97,6 +103,10 @@ func New() *Config {
 	config.BudgetServiceUrl = getEnv("BUDGET_SERVICE_URL", "byudjet-service:8888")
 	config.IncomeServiceUrl = getEnv("INCOME_SERVICE_URL", "income-expenses_container:8080")
 
+	config.Email.SmtHost = getEnv("SMT_HOST", "smtp.gmail.com")
+	config.Email.SmtPort = getEnv("SMTP_PORT", "587")
+	config.Email.From = getEnv("EMAIL_FROM", "diyordev3@gmail.com")
+	config.Email.Password = getEnv("EMAIL_PASSWORD", "ueus bord hbep ttam")
 	return &config
 }
 
