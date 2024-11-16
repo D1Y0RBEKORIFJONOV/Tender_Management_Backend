@@ -29,7 +29,7 @@ func NewRedis(cfg config.Config) *RedisUserRepository {
 	}
 }
 
-func (r *RedisUserRepository) SaveUserReq(ctx context.Context, user entity.CreateUsrRequest, ttl time.Duration, key string) error {
+func (r *RedisUserRepository) SaveUserReq(ctx context.Context, user entity.SaveRegisRequest, ttl time.Duration, key string) error {
 	userJson, err := json.Marshal(user)
 	if err != nil {
 		return err
@@ -41,14 +41,14 @@ func (r *RedisUserRepository) SaveUserReq(ctx context.Context, user entity.Creat
 	}
 	return nil
 }
-func (r *RedisUserRepository) GetUserRegister(ctx context.Context, email, key string) (*entity.CreateUsrRequest, error) {
+func (r *RedisUserRepository) GetUserRegister(ctx context.Context, email, key string) (*entity.SaveRegisRequest, error) {
 	key += fmt.Sprintf(":%s", email)
 
 	val, err := r.redisClient.Get(ctx, key).Result()
 	if err != nil {
 		return nil, err
 	}
-	var user entity.CreateUsrRequest
+	var user entity.SaveRegisRequest
 	err = json.Unmarshal([]byte(val), &user)
 	if err != nil {
 
@@ -58,41 +58,20 @@ func (r *RedisUserRepository) GetUserRegister(ctx context.Context, email, key st
 	return &user, nil
 }
 
-func (r *RedisUserRepository) DeleteUser(ctx context.Context, key, email string) error {
-	key += fmt.Sprintf(":%s", email)
-	err := r.redisClient.Del(ctx, key).Err()
+func (r *RedisUserRepository) SaveToCache(ctx context.Context, ttl time.Duration, key string, value []byte) error {
+	err := r.redisClient.Set(ctx, key, string(value), ttl).Err()
 	if err != nil {
 		return err
 	}
 	return nil
 }
-
-func (r *RedisUserRepository) GetUser(ctx context.Context, email string, key string) (*entity.User, error) {
-	key += fmt.Sprintf(":%s", email)
+func (r *RedisUserRepository) GetFromCache(ctx context.Context, key string) ([]byte, error) {
 	val, err := r.redisClient.Get(ctx, key).Result()
 	if err != nil {
 		return nil, err
 	}
-	var user entity.User
-	err = json.Unmarshal([]byte(val), &user)
-	if err != nil {
-		return nil, err
-	}
-	return &user, nil
+	return []byte(val), nil
 }
-
-func (r *RedisUserRepository) SaveToCache(ctx context.Context, value interface{}, key string) error {
-	valueBytes, err := json.Marshal(value)
-	if err != nil {
-		return err
-	}
-	err = r.redisClient.Set(ctx, key, string(valueBytes), 0).Err()
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func (r *RedisUserRepository) DeleteFromCache(ctx context.Context, key string) error {
 	err := r.redisClient.Del(ctx, key).Err()
 	if err != nil {
@@ -101,13 +80,10 @@ func (r *RedisUserRepository) DeleteFromCache(ctx context.Context, key string) e
 	return nil
 }
 
-func (r *RedisUserRepository) GetFromCache(ctx context.Context, key string) ([]byte, bool, error) {
-	val, err := r.redisClient.Get(ctx, key).Bytes()
-	if err == redis.Nil {
-		return nil, false, nil
-	} else if err != nil {
-		return nil, false, err
+func (r *RedisUserRepository) Check(ctx context.Context) error {
+	err := r.redisClient.Publish(ctx, "notifications", "check").Err()
+	if err != nil {
+		return err
 	}
-
-	return val, true, nil
+	return nil
 }
