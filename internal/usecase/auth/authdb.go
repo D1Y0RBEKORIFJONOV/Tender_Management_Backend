@@ -6,7 +6,7 @@ import (
 )
 
 type authDbUseCase interface {
-	SaveUser(ctx context.Context, req *entity.CreateUsrRequest) (*entity.User, error)
+	SaveUser(ctx context.Context, req *entity.User) (*entity.User, error)
 }
 
 type AuthDbUseCaseImpl struct {
@@ -19,4 +19,12 @@ func NewAuthDbUseCase(authDbRepository authDbUseCase) *AuthDbUseCaseImpl {
 
 func (a *AuthDbUseCaseImpl) SaveUser(ctx context.Context, req *entity.CreateUsrRequest) (*entity.User, error) {
 	return a.authDbRepository.SaveUser(ctx, req)
+}
+
+func (a *AuthDbUseCaseImpl) IsHaveUser(ctx context.Context, byEmail string) (bool, error) {
+	return a.authDbRepository.IsHaveUser(ctx, byEmail)
+}
+
+func (a *AuthDbUseCaseImpl) GetUserByEmail(ctx context.Context, byEmail string) (*entity.User, error) {
+	return a.authDbRepository.GetUserByEmail(ctx, byEmail)
 }
