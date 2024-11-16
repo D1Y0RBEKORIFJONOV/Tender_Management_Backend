@@ -11,8 +11,6 @@ type (
 		Deadline       time.Time `json:"deadline" bson:"deadline"`
 		Budget         float64   `json:"budget" bson:"budget"`
 		Status         string    `json:"status" bson:"status"`
-		CreatedAt      time.Time `json:"created_at" bson:"created_at"`
-		UpdatedAt      time.Time `json:"updated_at" bson:"updated_at"`
 		FileAttachment string    `json:"file_attachment" bson:"file_attachment,omitempty"`
 	}
 	CreateTenderRequest struct {

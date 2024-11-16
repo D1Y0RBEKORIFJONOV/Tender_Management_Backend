@@ -1,16 +1,12 @@
 package entity
 
-import "time"
-
 type (
 	User struct {
-		ID        string    `json:"id" bson:"_id,omitempty"`
-		Username  string    `json:"username" bson:"username"`
-		Password  string    `json:"password" bson:"password"`
-		Email     string    `json:"email" bson:"email"`
-		Role      string    `json:"role" bson:"role"`
-		CreatedAt time.Time `json:"created_at" bson:"created_at"`
-		UpdatedAt time.Time `json:"updated_at" bson:"updated_at"`
+		ID       string `json:"id" bson:"_id,omitempty"`
+		Username string `json:"username" bson:"username"`
+		Password string `json:"password" bson:"password"`
+		Email    string `json:"email" bson:"email"`
+		Role     string `json:"role" bson:"role"`
 	}
 	CreateUsrRequest struct {
 		Username string `json:"username"`
