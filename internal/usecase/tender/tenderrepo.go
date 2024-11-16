@@ -35,3 +35,4 @@ func (t *TenderRepositoryImpl) UpdateTenderStatus(ctx context.Context, req *enti
 func (t *TenderRepositoryImpl) DeleteTender(ctx context.Context, req *entity.DeleteTenderRequest) error {
 	return t.tenderRepository.DeleteTender(ctx, req)
 }
+	

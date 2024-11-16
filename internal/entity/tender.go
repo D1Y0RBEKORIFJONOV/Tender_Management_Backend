@@ -20,6 +20,7 @@ type (
 		Deadline       time.Time `json:"deadline"`
 		Budget         float64   `json:"budget"`
 		FileAttachment string    `json:"file_attachment,omitempty"`
+		PDFURL		   string	 `json:"pdfurl"`
 	}
 	GetListTender struct {
 		Limit int
