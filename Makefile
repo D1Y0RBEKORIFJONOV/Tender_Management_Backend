@@ -9,3 +9,6 @@ migratedown:
 	migrate -path migrations -database ${DB_URL} down
 migrateforce:
 	migrate -path migrations -database ${DB_URL} force 1
+
+swag:
+	swag init -g internal/http/handler/auth.go

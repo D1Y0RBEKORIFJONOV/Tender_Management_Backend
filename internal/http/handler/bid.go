@@ -89,24 +89,29 @@ func (b *Bid) GetBids(c *gin.Context) {
 // @Failure 400 {object} string
 // @Failure 500 {object} string
 // @Security Bearer
-// @Router /tenders/{id}/bids/{bid_id} [put]
+// @Router /tenders/{id}/bids [put]
 func (b *Bid) UpdateBid(c *gin.Context) {
 	var req entity.UpdateBidRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+	  c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	  return
 	}
-	id := c.Param("id")
-	req.ContractorID = id
-
+	id, ok := c.Get("user_id")
+	if !ok {
+	  c.JSON(http.StatusInternalServerError, gin.H{"error": "user id not found"})
+	  return
+	}
+  
+	req.ContractorID = id.(string)
+  
 	res, err := b.bid.UpdateBid(c.Request.Context(), &req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
+	  c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	  return
 	}
-
+  
 	c.JSON(http.StatusOK, res)
-}
+  }
 
 // DeleteBid godoc
 // @Summary Delete a bid by ID
@@ -122,11 +127,8 @@ func (b *Bid) UpdateBid(c *gin.Context) {
 // @Router /tender/{id} [delete]
 func (b *Bid) DeleteBid(c *gin.Context) {
 	var req entity.DeleteBidsRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
+	id := c.Param("id")
+	req.ContractorID = id
 	res, err := b.bid.DeleteBid(c.Request.Context(), &req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
