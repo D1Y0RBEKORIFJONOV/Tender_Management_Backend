@@ -8,6 +8,7 @@ import (
 	notificationusecase "awesomeProject/internal/usecase/notification"
 	"context"
 	"errors"
+	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"log/slog"
 )
@@ -81,13 +82,14 @@ func (a *Auth) LoginUser(ctx context.Context, req entity.LoginRequest) (entity.L
 
 	user, err := a.auth.GetUserByEmail(ctx, req.Email)
 	if err != nil {
+		log.Error("err", req.Email)
 		log.Error("err", err.Error())
 		return entity.LoginResponse{}, err
 	}
-
+	log.Info(fmt.Sprintf("req: %v", req))
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
-		log.Error("Failed to login", err.Error())
-		return entity.LoginResponse{}, errors.New("invalid password or username")
+		log.Error("Failed to Login", err.Error())
+		return entity.LoginResponse{}, errors.New("invalid password")
 	}
 	log.Info("Successfully logged in")
 	token, _, err := token2.GenerateTokens(user)

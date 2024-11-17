@@ -160,13 +160,6 @@ definitions:
       username:
         type: string
     type: object
-  entity.VerifyUserRequest:
-    properties:
-      email:
-        type: string
-      secret_code:
-        type: string
-    type: object
 info:
   contact: {}
   description: This is a sample server for a Tender  system.
@@ -220,7 +213,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/entity.User'
         "400":
           description: Bad Request
           schema:
@@ -422,6 +415,7 @@ paths:
       summary: Create a new bid
       tags:
       - bid
+  /tenders/{id}/bids/{bid_id}:
     put:
       consumes:
       - application/json
@@ -485,36 +479,6 @@ paths:
       summary: Announce the winner for a tender
       tags:
       - bid
-  /verify-code:
-    post:
-      consumes:
-      - application/json
-      description: Verify the user code sent to the user's email
-      parameters:
-      - description: Verification request body
-        in: body
-        name: verify
-        required: true
-        schema:
-          $ref: '#/definitions/entity.VerifyUserRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/entity.User'
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Verify a user code
-      tags:
-      - user
 securityDefinitions:
   Bearer:
     description: Enter the token in the format `Bearer {token}`

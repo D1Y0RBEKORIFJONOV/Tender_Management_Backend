@@ -1,9 +1,9 @@
-p, unauthorized, /user/register, POST
-p, unauthorized, /user/login, POST
-p, user, /tenders/, POST
-p, user, /tenders/, GET
-p, user, /tenders/, PUT
-p, user, /tenders/, DELETE
+p, unauthorized, /register, POST
+p, unauthorized, /login, POST
+p, client, /tenders/, POST
+p, client, /tenders/, GET
+p, client, /tenders/, PUT
+p, client, /tenders/, DELETE
 
 p, contractor, /tenders/, GET
 p, contractor, /budget/*, (.*)

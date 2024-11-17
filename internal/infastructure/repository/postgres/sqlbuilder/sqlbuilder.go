@@ -14,13 +14,12 @@ import (
 
 func CreateUser(req *entity.CreateUsrRequest) (string, []interface{}, error) {
 	id := uuid.New().String()
-	password := Hashing(req.Password)
 	query, args, err := squirrel.
 		Insert("users").
 		Columns("id", "username", "password", "role", "email").
-		Values(id, req.Username, password, req.Role, req.Email).
+		Values(id, req.Username, req.Password, req.Role, req.Email).
 		PlaceholderFormat(squirrel.Dollar).
-		Suffix("RETURNING id,username,role,email").
+		Suffix("RETURNING id,username,password,role,email").
 		ToSql()
 	if err != nil {
 		logger.SetupLogger(fmt.Sprintf("Something went wrong while Creating user %v", err))
@@ -43,7 +42,7 @@ func HaveUser(req string) (string, []interface{}, error) {
 }
 
 func Getuser(req string) (string, []interface{}, error) {
-	query, args, err := squirrel.Select("*").From("user").
+	query, args, err := squirrel.Select("*").From("users").
 		Where(squirrel.Eq{"email": req}).
 		PlaceholderFormat(squirrel.Dollar).
 		ToSql()

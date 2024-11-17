@@ -89,7 +89,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/entity.User"
                         }
                     },
                     "400": {
@@ -358,55 +358,6 @@ const docTemplate = `{
                     }
                 }
             },
-            "put": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "Update a bid with new information",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "bid"
-                ],
-                "summary": "Update a bid",
-                "parameters": [
-                    {
-                        "description": "Update Bid request body",
-                        "name": "bid",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entity.UpdateBidRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/entity.Bid"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
             "post": {
                 "security": [
                     {
@@ -508,9 +459,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/verify-code": {
-            "post": {
-                "description": "Verify the user code sent to the user's email",
+        "/tenders/{id}/bids/{bid_id}": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Update a bid with new information",
                 "consumes": [
                     "application/json"
                 ],
@@ -518,17 +474,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "bid"
                 ],
-                "summary": "Verify a user code",
+                "summary": "Update a bid",
                 "parameters": [
                     {
-                        "description": "Verification request body",
-                        "name": "verify",
+                        "description": "Update Bid request body",
+                        "name": "bid",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.VerifyUserRequest"
+                            "$ref": "#/definitions/entity.UpdateBidRequest"
                         }
                     }
                 ],
@@ -536,7 +492,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.User"
+                            "$ref": "#/definitions/entity.Bid"
                         }
                     },
                     "400": {
@@ -800,17 +756,6 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
-        },
-        "entity.VerifyUserRequest": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "secret_code": {
-                    "type": "string"
-                }
-            }
         }
     },
     "securityDefinitions": {
@@ -833,8 +778,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "This is a sample server for a Tender  system.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-// 	LeftDelim:        "{{",
-// 	RightDelim:       "}}",
+	//LeftDelim:        "{{",
+	//RightDelim:       "}}",
 }
 
 func init() {
