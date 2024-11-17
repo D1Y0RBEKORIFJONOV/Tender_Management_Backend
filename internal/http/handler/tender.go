@@ -35,7 +35,6 @@ func NewTender(tender tenderusecase.TenderUseCaseIml) *Tender {
 	err = client.MakeBucket(context.Background(), bucketName, minio.MakeBucketOptions{})
 	if err != nil {
 		errResp := minio.ToErrorResponse(err)
-		// Tekshirilgan xatoliklarni e'tiborga olmaslik
 		if errResp.Code != "BucketAlreadyOwnedByYou" && errResp.Code != "BucketAlreadyExists" {
 			panic(fmt.Sprintf("Failed to create bucket: %v", err))
 		}
@@ -57,13 +56,20 @@ func NewTender(tender tenderusecase.TenderUseCaseIml) *Tender {
 // @Param data body entity.CreateTenderRequest true "Tender data"
 // @Success 201 {object} string
 // @Failure 400 {object} gin.H
+// @Security Bearer
 // @Router /tenders [post]
 func (t *Tender) CreateTender(c *gin.Context) {
 	var req entity.CreateTenderRequest
+	id, ok := c.Get("user_id")
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user_id not found"})
+		return
+	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	req.ClientID = id.(string)
 
 	file, _ := c.FormFile("pdf")
 	if file != nil {
@@ -99,6 +105,7 @@ func (t *Tender) CreateTender(c *gin.Context) {
 // @Param filter body entity.GetListTender true "Tender filter"
 // @Success 200 {array} entity.TenderResponse
 // @Failure 400 {object} gin.H
+// @Security Bearer
 // @Router /tenders [get]
 func (t *Tender) GetTenders(c *gin.Context) {
 	var req entity.GetListTender
@@ -142,10 +149,17 @@ func (t *Tender) GetTenders(c *gin.Context) {
 // @Router /tenders/{id} [put]
 func (t *Tender) UpdateTenderStatus(c *gin.Context) {
 	var req entity.UpdateTenderStatusRequest
+	id, ok := c.Get("user_id")
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user_id not found"})
+		return
+	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	req.ClientID = id.(string)
 
 	res, err := t.tender.UpdateTenderStatus(c.Request.Context(), req)
 	if err != nil {
@@ -169,10 +183,16 @@ func (t *Tender) UpdateTenderStatus(c *gin.Context) {
 // @Router /tender/{id} [delete]
 func (t *Tender) DeleteTender(c *gin.Context) {
 	var req entity.DeleteTenderRequest
+	id, ok := c.Get("user_id")
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user_id not found"})
+		return
+	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	req.ClientID = id.(string)
 
 	res, err := t.tender.DeleteTender(c.Request.Context(), req)
 	if err != nil {

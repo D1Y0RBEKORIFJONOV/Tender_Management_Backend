@@ -71,12 +71,20 @@ func Token() string {
 
 func New() *Config {
 	var config Config
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> 9e59aa8b367e4984f45704bfd3ad074f752fd620
 	config.Database.User=getEnv("User","postgres")
 	config.Database.Password=getEnv("Password","2005")
 	config.Database.Host=getEnv("Host","localhost")
 	config.Database.Port=getEnv("Port","5432")
 	config.Database.Dbname=getEnv("Dbname","udevs")
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9e59aa8b367e4984f45704bfd3ad074f752fd620
 	config.DB.CollectionName = "notifications"
 	config.DB.Host = getEnv("DB_HOST", "localhost")
 	config.DB.Port = getEnv("DB_PORT", "5432")
