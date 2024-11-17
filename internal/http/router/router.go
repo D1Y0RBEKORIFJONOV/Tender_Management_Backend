@@ -36,8 +36,8 @@ func Router(auth authusecase.UserUseCaseImpl, tender tenderusecase.TenderUseCase
 		tenderGroup.GET("tenders", tenderhandler.GetTenders)
 		tenderGroup.PUT("tenders/:id", tenderhandler.UpdateTenderStatus)
 		tenderGroup.DELETE("tenders/:id", tenderhandler.DeleteTender)
+		tenderGroup.GET("tendersall",tenderhandler.GetALlTenders)
 	}
-
 	bidGroup := router.Group("/")
 	{
 		bidGroup.POST("tenders/:id/bids", bidhandler.CreateBid)

@@ -126,7 +126,7 @@ func UpdateTender(req *entity.UpdateTenderStatusRequest) (string, []interface{},
 	query, args, err := squirrel.
 		Update("tenders").
 		Set("status", req.NewStatus).
-		Where(squirrel.Eq{"id": req.ID}).
+		Where(squirrel.Eq{"id": req.ID}, squirrel.Eq{"client_id": req.ClientID}).
 		PlaceholderFormat(squirrel.Dollar).
 		Suffix("RETURNING *").
 		ToSql()
@@ -134,6 +134,7 @@ func UpdateTender(req *entity.UpdateTenderStatusRequest) (string, []interface{},
 		logger.SetupLogger(fmt.Sprintf("Something went wrong while updating tenders %v", err))
 		return "", nil, err
 	}
+	fmt.Println(query, args)
 	return query, args, err
 }
 
@@ -155,7 +156,7 @@ func CreateBid(req *entity.CreateBidRequest) (string, []interface{}, error) {
 	query, args, err := squirrel.Insert("bids").
 		Columns("id", "tender_id", "contractor_id", "price", "delivery_time", "comments", "status").
 		Values(id, req.TenderID, req.ContractorID, req.Price, req.DeliveryTime, req.Comments, "pending").
-		PlaceholderFormat(squirrel.Dollar).
+		PlaceholderFormat(squirrel.Dollar).Suffix("RETURNING *").
 		ToSql()
 	if err != nil {
 		logger.SetupLogger(fmt.Sprintf("Something went wrong while creating bid %v", err))

@@ -492,6 +492,43 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/tendersall": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "get all a specific tender by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tender"
+                ],
+                "summary": "Get all a tender by ID",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -536,9 +573,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "comments": {
-                    "type": "string"
-                },
-                "contractor_id": {
                     "type": "string"
                 },
                 "delivery_time": {
@@ -677,12 +711,6 @@ const docTemplate = `{
         "entity.UpdateTenderStatusRequest": {
             "type": "object",
             "properties": {
-                "client_id": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
                 "new_status": {
                     "type": "string"
                 }

@@ -3,6 +3,7 @@ package handler
 import (
 	"awesomeProject/internal/entity"
 	bidusecase "awesomeProject/internal/usecase/bid"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -40,7 +41,13 @@ func (b *Bid) CreateBid(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
+	id, ok := c.Get("user_id")
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "user id not found"})
+		return
+	}
+	req.ContractorID = id.(string)
+	fmt.Println(req.ContractorID)
 	res, err := b.bid.CreateBid(c.Request.Context(), &req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

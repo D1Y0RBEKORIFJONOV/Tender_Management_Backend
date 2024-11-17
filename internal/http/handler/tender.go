@@ -135,7 +135,7 @@ func (t *Tender) GetTenders(c *gin.Context) {
   
 
 
-// UpdateTender godoc
+// UpdateTenderStatus godoc
 // @Summary Update Tender
 // @Description Update information of a specific Tender by its ID
 // @Tags product
@@ -160,7 +160,7 @@ func (t *Tender) UpdateTenderStatus(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
+	req.ID = c.Param("id")
 	req.ClientID = id.(string)
 
 	res, err := t.tender.UpdateTenderStatus(c.Request.Context(), req)
@@ -211,4 +211,23 @@ func (t *Tender) uploadPDF(c *gin.Context, file *multipart.FileHeader, filename 
 		ContentType: "application/pdf",
 	})
 	return err
+}
+
+// GetALlTenders godoc
+// @Summary Get all a tender by ID
+// @Description get all a specific tender by its ID
+// @Tags tender
+// @Produce json
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 500 {object} string
+// @Security Bearer
+// @Router /tendersall [get]
+func (t *Tender) GetALlTenders(c *gin.Context) {
+	res, err := t.tender.GetTenders(c.Request.Context(), entity.GetListTender{})
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, res)
 }

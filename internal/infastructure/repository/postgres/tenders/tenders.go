@@ -30,7 +30,6 @@ func (u *TenderRepository) SaveTender(ctx context.Context, req *entity.CreateTen
 	}
 
 	var tender entity.Tender
-
 	if err := u.db.Db.QueryRow(query, args...).Scan(&tender.ID, &tender.ClientID, &tender.Title, &tender.Description, &tender.Deadline, &tender.Budget, &tender.Status, &tender.FileAttachment, &tender.CreatedAt); err != nil {
 		logger.SetupLogger(err.Error())
 		return nil, err
@@ -39,16 +38,6 @@ func (u *TenderRepository) SaveTender(ctx context.Context, req *entity.CreateTen
 }
 
 func (u *TenderRepository) GetTenders(ctx context.Context, req *entity.GetListTender) ([]entity.Tender, error) {
-	// q, a, e := postgres.CloseExpiredTenders()
-	// if e != nil {
-	// 	logger.SetupLogger(e.Error())
-	// 	return nil, e
-	// }
-	// _, err := u.db.Db.Exec(q, a...)
-	// if err != nil {
-	// 	logger.SetupLogger(err.Error())
-	// 	return nil, err
-	// }
 	query, args, err := postgres.GetListTender(req)
 	if err != nil {
 		logger.SetupLogger(err.Error())
@@ -83,8 +72,7 @@ func (u *TenderRepository) UpdateTenderStatus(ctx context.Context, req *entity.U
 		return nil, err
 	}
 	var tender entity.Tender
-
-	if err := u.db.Db.QueryRow(query, args...).Scan(&tender.ID, &tender.ClientID, &tender.Title, &tender.Description, &tender.Deadline, &tender.Budget, &tender.Status, &tender.FileAttachment); err != nil {
+	if err := u.db.Db.QueryRow(query, args...).Scan(&tender.ID, &tender.ClientID, &tender.Title, &tender.Description, &tender.Deadline, &tender.Budget, &tender.Status, &tender.FileAttachment, &tender.CreatedAt); err != nil {
 		logger.SetupLogger(err.Error())
 		return nil, err
 	}
