@@ -6,8 +6,7 @@ import (
 )
 
 type userUseCase interface {
-	RegisterUser(ctx context.Context, req entity.CreateUsrRequest) (message string, err error)
-	VerifyUser(ctx context.Context, req entity.VerifyUserRequest) (entity.User, error)
+	RegisterUser(ctx context.Context, req entity.CreateUsrRequest) (user entity.User, err error)
 	LoginUser(ctx context.Context, req entity.LoginRequest) (entity.LoginResponse, error)
 }
 
@@ -19,12 +18,8 @@ func NewUserUseCase(userRepository userUseCase) *UserUseCaseImpl {
 	return &UserUseCaseImpl{userRepository: userRepository}
 }
 
-func (u *UserUseCaseImpl) RegisterUser(ctx context.Context, req entity.CreateUsrRequest) (string, error) {
+func (u *UserUseCaseImpl) RegisterUser(ctx context.Context, req entity.CreateUsrRequest) (user entity.User, err error) {
 	return u.userRepository.RegisterUser(ctx, req)
-}
-
-func (u *UserUseCaseImpl) VerifyUser(ctx context.Context, req entity.VerifyUserRequest) (entity.User, error) {
-	return u.userRepository.VerifyUser(ctx, req)
 }
 
 func (u *UserUseCaseImpl) LoginUser(ctx context.Context, req entity.LoginRequest) (entity.LoginResponse, error) {

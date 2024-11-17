@@ -1,0 +1,14 @@
+p, unauthorized, /user/register, POST
+p, unauthorized, /user/login, POST
+p, user, /tenders/, POST
+p, user, /tenders/, GET
+p, user, /tenders/, PUT
+p, user, /tenders/, DELETE
+
+p, contractor, /tenders/, GET
+p, contractor, /budget/*, (.*)
+p, contractor, /income/*, (.*)
+p, contractor, /report/*, (.*)
+
+
+p, unauthorized, /swagger/*, GET

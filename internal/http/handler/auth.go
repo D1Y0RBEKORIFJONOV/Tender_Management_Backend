@@ -33,7 +33,7 @@ func NewAuth(auth authusecase.UserUseCaseImpl) *Auth {
 // @Accept json
 // @Produce json
 // @Param user body entity.CreateUsrRequest true "User request body"
-// @Success 200 {object} string
+// @Success 200 {object} entity.User
 // @Failure 400 {object} string
 // @Failure 500 {object} string
 // @Router /register [post]
@@ -43,41 +43,15 @@ func (u *Auth) Register(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	message, err := u.auth.RegisterUser(c.Request.Context(), req)
+	user, err := u.auth.RegisterUser(c.Request.Context(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": message})
+	c.JSON(http.StatusOK, user)
 }
 
-// VerifyCode godoc
-// @Summary Verify a user code
-// @Description Verify the user code sent to the user's email
-// @Tags user
-// @Accept json
-// @Produce json
-// @Param verify body entity.VerifyUserRequest true "Verification request body"
-// @Success 200 {object} entity.User
-// @Failure 400 {object} string
-// @Failure 500 {object} string
-// @Router /verify-code [post]
-func (u *Auth) VerifyUser(c *gin.Context) {
-	var req entity.VerifyUserRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	message, err := u.auth.VerifyUser(c.Request.Context(), req)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"message": message})
-}
-
-// Login godoc
+// LoginUser godoc
 // @Summary User login
 // @Description Log in a user with email and password
 // @Tags user
@@ -89,7 +63,7 @@ func (u *Auth) VerifyUser(c *gin.Context) {
 // @Failure 500 {object} string
 // @Router /login [post]
 func (u *Auth) LoginUser(c *gin.Context) {
-	var req  entity.LoginRequest
+	var req entity.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -101,7 +75,5 @@ func (u *Auth) LoginUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message" : message})
+	c.JSON(http.StatusOK, gin.H{"message": message})
 }
-
-

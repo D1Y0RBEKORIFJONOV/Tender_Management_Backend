@@ -96,8 +96,13 @@ func (b *Bid) UpdateBid(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	id := c.Param("id")
-	req.ContractorID = id
+	id, ok := c.Get("user_id")
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "user id not found"})
+		return
+	}
+
+	req.ContractorID = id.(string)
 
 	res, err := b.bid.UpdateBid(c.Request.Context(), &req)
 	if err != nil {
