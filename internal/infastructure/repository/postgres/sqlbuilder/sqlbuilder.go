@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
@@ -14,13 +15,12 @@ import (
 
 func CreateUser(req *entity.CreateUsrRequest) (string, []interface{}, error) {
 	id := uuid.New().String()
-	password := Hashing(req.Password)
 	query, args, err := squirrel.
 		Insert("users").
 		Columns("id", "username", "password", "role", "email").
-		Values(id, req.Username, password, req.Role, req.Email).
+		Values(id, req.Username, req.Password, req.Role, req.Email).
 		PlaceholderFormat(squirrel.Dollar).
-		Suffix("RETURNING id,username,role,email").
+		Suffix("RETURNING id,username,password,role,email").
 		ToSql()
 	if err != nil {
 		logger.SetupLogger(fmt.Sprintf("Something went wrong while Creating user %v", err))
@@ -58,7 +58,7 @@ func CreateTender(req *entity.CreateTenderRequest) (string, []interface{}, error
 	id := uuid.New().String()
 	query, args, err := squirrel.Insert("tenders").
 		Columns("id", "client_id", "title", "description", "deadline", "budget", "status", "fileattachment,created_at").
-		Values(id, req.ClientID, req.Title, req.Description, req.Deadline, req.Budget, "open", req.FileAttachment, req.CreatedAt).
+		Values(id, req.ClientID, req.Title, req.Description, req.Deadline, req.Budget, "open", req.FileAttachment, time.Now()).
 		PlaceholderFormat(squirrel.Dollar).
 		ToSql()
 	if err != nil {

@@ -17,6 +17,10 @@ services:
       retries: 3
       start_period: 30s
       timeout: 10s
+    depends_on:
+      - mongodb
+      - redis
+      - migrate
     networks:
       - finance
 
@@ -31,9 +35,9 @@ services:
     networks:
       - finance
 
-  mongo:
+  mongodb:
     image: mongo:latest
-    container_name: mongo
+    container_name: mongodb
     ports:
       - "27017:27017"
     volumes:
@@ -68,7 +72,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      mongo:
+      mongodb:
         condition: service_healthy
       redis:
         condition: service_healthy

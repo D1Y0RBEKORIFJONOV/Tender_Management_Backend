@@ -29,7 +29,7 @@ func (u *UserRepository) SaveUser(ctx context.Context, req *entity.CreateUsrRequ
 	}
 	var user entity.User
 
-	if err := u.db.Db.QueryRow(query, args...).Scan(&user.ID, &user.Username, &user.Role, &user.Email); err != nil {
+	if err := u.db.Db.QueryRow(query, args...).Scan(&user.ID, &user.Username, &user.Password, &user.Role, &user.Email); err != nil {
 		logger.SetupLogger(err.Error())
 		return nil, err
 	}
@@ -60,7 +60,7 @@ func (u *UserRepository) GetUserByEmail(ctx context.Context, byEmail string) (*e
 	}
 	var user entity.User
 
-	if err := u.db.Db.QueryRow(query, args...).Scan(&user.ID, &user.Username, &user.Role, &user.Email); err != nil {
+	if err := u.db.Db.QueryRow(query, args...).Scan(&user.ID, &user.Username, &user.Password, &user.Role, &user.Email); err != nil {
 		logger.SetupLogger(err.Error())
 		return nil, err
 	}

@@ -41,10 +41,10 @@ func Router(auth authusecase.UserUseCaseImpl, tender tenderusecase.TenderUseCase
 	bidGroup := router.Group("/")
 	{
 		bidGroup.POST("tenders/:id/bids", bidhandler.CreateBid)
-		bidGroup.GET("tenders/:id/bids", bidhandler.GetBids)
-		bidGroup.PUT("tenders/:id/bids/:id", bidhandler.UpdateBid)
-		bidGroup.DELETE("tenders/:id/bids/:id", bidhandler.DeleteBid)
-		bidGroup.POST("tenders/:id/bids/winner", bidhandler.AnnounceWinner)
+		bidGroup.GET("tenders/bids/:id", bidhandler.GetBids)
+		bidGroup.PUT("tenders/:id/bids", bidhandler.UpdateBid)
+		bidGroup.DELETE("tenders/bids/:id", bidhandler.DeleteBid)
+		bidGroup.POST("tenders/:id/award/:bid_id", bidhandler.AnnounceWinner)
 	}
 
 	return router

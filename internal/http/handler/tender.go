@@ -5,8 +5,10 @@ import (
 	tenderusecase "awesomeProject/internal/usecase/tender"
 	"context"
 	"fmt"
+	"log"
 	"mime/multipart"
 	"net/http"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -15,6 +17,8 @@ import (
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
+
+const maxFileSize = 10 * 1024 * 1024 
 
 type Tender struct {
 	tender     tenderusecase.TenderUseCaseIml
@@ -35,8 +39,10 @@ func NewTender(tender tenderusecase.TenderUseCaseIml) *Tender {
 	err = client.MakeBucket(context.Background(), bucketName, minio.MakeBucketOptions{})
 	if err != nil {
 		errResp := minio.ToErrorResponse(err)
-		if errResp.Code != "BucketAlreadyOwnedByYou" && errResp.Code != "BucketAlreadyExists" {
-			panic(fmt.Sprintf("Failed to create bucket: %v", err))
+		if errResp.Code == "BucketAlreadyOwnedByYou" || errResp.Code == "BucketAlreadyExists" {
+			log.Printf("Bucket %s already exists or is owned by you: %v", bucketName, errResp)
+		} else {
+			log.Printf("Failed to create bucket: %v", err)
 		}
 	}
 
@@ -55,7 +61,7 @@ func NewTender(tender tenderusecase.TenderUseCaseIml) *Tender {
 // @Param pdf formData file false "Upload PDF"
 // @Param data body entity.CreateTenderRequest true "Tender data"
 // @Success 201 {object} string
-// @Failure 400 {object} gin.H
+// @Failure 400 {object} string
 // @Security Bearer
 // @Router /tenders [post]
 func (t *Tender) CreateTender(c *gin.Context) {
@@ -79,10 +85,15 @@ func (t *Tender) CreateTender(c *gin.Context) {
 			return
 		}
 
+		if file.Size > maxFileSize {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "File size exceeds 10MB limit"})
+			return
+		}
+
 		newFileName := uuid.NewString() + ext
 		err := t.uploadPDF(c, file, newFileName)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"error1": err.Error()})
 			return
 		}
 		req.FileAttachment = newFileName
@@ -90,7 +101,7 @@ func (t *Tender) CreateTender(c *gin.Context) {
 
 	message, err := t.tender.CreateTender(c.Request.Context(), req)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error2": err.Error()})
 		return
 	}
 
@@ -103,8 +114,8 @@ func (t *Tender) CreateTender(c *gin.Context) {
 // @Tags tenders
 // @Accept json
 // @Param filter body entity.GetListTender true "Tender filter"
-// @Success 200 {array} entity.TenderResponse
-// @Failure 400 {object} gin.H
+// @Success 200 {object} []entity.Tender
+// @Failure 400 {object} string
 // @Security Bearer
 // @Router /tenders [get]
 func (t *Tender) GetTenders(c *gin.Context) {
@@ -200,11 +211,11 @@ func (t *Tender) DeleteTender(c *gin.Context) {
 }
 
 func (t *Tender) uploadPDF(c *gin.Context, file *multipart.FileHeader, filename string) error {
-
 	path := "./temp/" + filename
 	if err := c.SaveUploadedFile(file, path); err != nil {
 		return err
 	}
+	defer os.Remove(path)
 
 	_, err := t.miniClient.FPutObject(context.Background(), t.bucketName, filename, path, minio.PutObjectOptions{
 		ContentType: "application/pdf",

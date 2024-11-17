@@ -62,7 +62,7 @@ func (b *Bid) CreateBid(c *gin.Context) {
 // @Failure 500 {object} string
 // @Security Bearer
 // @Router /tenders/{id}/bids [get]
-func (b *Bid) GetBids(c *gin.Context){
+func (b *Bid) GetBids(c *gin.Context) {
 	var req entity.GetBidsRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -90,12 +90,14 @@ func (b *Bid) GetBids(c *gin.Context){
 // @Failure 500 {object} string
 // @Security Bearer
 // @Router /tenders/{id}/bids/{bid_id} [put]
-func (b *Bid) UpdateBid(c *gin.Context){
+func (b *Bid) UpdateBid(c *gin.Context) {
 	var req entity.UpdateBidRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	id := c.Param("id")
+	req.ContractorID = id
 
 	res, err := b.bid.UpdateBid(c.Request.Context(), &req)
 	if err != nil {
@@ -118,7 +120,7 @@ func (b *Bid) UpdateBid(c *gin.Context){
 // @Failure 500 {object} string
 // @Security Bearer
 // @Router /tender/{id} [delete]
-func (b *Bid) DeleteBid(c *gin.Context){
+func (b *Bid) DeleteBid(c *gin.Context) {
 	var req entity.DeleteBidsRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -146,7 +148,7 @@ func (b *Bid) DeleteBid(c *gin.Context){
 // @Failure 500 {object} string
 // @Security Bearer
 // @Router /tenders/{id}/bids/winner [post]
-func (b *Bid) AnnounceWinner(c *gin.Context){
+func (b *Bid) AnnounceWinner(c *gin.Context) {
 	var req entity.AnnounceWinnerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

@@ -21,3 +21,5 @@ stop:
 
 clean:
 	docker-compose down -v
+swag:
+	swag init -g internal/http/handler/auth.go
