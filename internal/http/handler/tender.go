@@ -5,8 +5,10 @@ import (
 	tenderusecase "awesomeProject/internal/usecase/tender"
 	"context"
 	"fmt"
+	"log"
 	"mime/multipart"
 	"net/http"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -15,6 +17,8 @@ import (
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
+
+const maxFileSize = 10 * 1024 * 1024 // Максимальный размер файла 10MB
 
 type Tender struct {
 	tender     tenderusecase.TenderUseCaseIml
@@ -35,8 +39,10 @@ func NewTender(tender tenderusecase.TenderUseCaseIml) *Tender {
 	err = client.MakeBucket(context.Background(), bucketName, minio.MakeBucketOptions{})
 	if err != nil {
 		errResp := minio.ToErrorResponse(err)
-		if errResp.Code != "BucketAlreadyOwnedByYou" && errResp.Code != "BucketAlreadyExists" {
-			panic(fmt.Sprintf("Failed to create bucket: %v", err))
+		if errResp.Code == "BucketAlreadyOwnedByYou" || errResp.Code == "BucketAlreadyExists" {
+			log.Printf("Bucket %s already exists or is owned by you: %v", bucketName, errResp)
+		} else {
+			log.Printf("Failed to create bucket: %v", err)
 		}
 	}
 
@@ -76,6 +82,11 @@ func (t *Tender) CreateTender(c *gin.Context) {
 		ext := filepath.Ext(file.Filename)
 		if ext != ".pdf" {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid file type, must be .pdf"})
+			return
+		}
+
+		if file.Size > maxFileSize {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "File size exceeds 10MB limit"})
 			return
 		}
 
@@ -200,11 +211,11 @@ func (t *Tender) DeleteTender(c *gin.Context) {
 }
 
 func (t *Tender) uploadPDF(c *gin.Context, file *multipart.FileHeader, filename string) error {
-
 	path := "./temp/" + filename
 	if err := c.SaveUploadedFile(file, path); err != nil {
 		return err
 	}
+	defer os.Remove(path)
 
 	_, err := t.miniClient.FPutObject(context.Background(), t.bucketName, filename, path, minio.PutObjectOptions{
 		ContentType: "application/pdf",

@@ -1,4 +1,4 @@
-DB_URL=postgres://postgres:2005@localhost:5432/udevs?sslmode=disable
+DB_URL=postgres://postgres:+_+diyor2005+_+@localhost:5432/udevs?sslmode=disable
 
 
 migrate:
@@ -8,4 +8,4 @@ migrateup:
 migratedown:
 	migrate -path migrations -database ${DB_URL} down
 migrateforce:
-	migrate -path migrations -database ${DB_URL} force
+	migrate -path migrations -database ${DB_URL} force 1
