@@ -79,7 +79,7 @@ func (t *Tender) CreateTender(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		req.PDFURL = newFileName
+		req.FileAttachment = newFileName
 	}
 
 	message, err := t.tender.CreateTender(c.Request.Context(), req)

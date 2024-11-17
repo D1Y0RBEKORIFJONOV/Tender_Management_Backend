@@ -5,7 +5,7 @@ import (
 	"context"
 )
 
-type tenderRepository interface {
+type TenderRepository interface {
 	SaveTender(ctx context.Context, req *entity.CreateTenderRequest) (*entity.Tender, error)
 	GetTenders(ctx context.Context, req *entity.GetListTender) ([]entity.Tender, error)
 	UpdateTenderStatus(ctx context.Context, req *entity.UpdateTenderStatusRequest) (*entity.Tender, error)
@@ -13,10 +13,10 @@ type tenderRepository interface {
 }
 
 type TenderRepositoryImpl struct {
-	tenderRepository tenderRepository
+	tenderRepository TenderRepository
 }
 
-func NewTenderRepository(tenderRepository tenderRepository) *TenderRepositoryImpl {
+func NewTenderRepository(tenderRepository TenderRepository) *TenderRepositoryImpl {
 	return &TenderRepositoryImpl{tenderRepository: tenderRepository}
 }
 
@@ -35,4 +35,3 @@ func (t *TenderRepositoryImpl) UpdateTenderStatus(ctx context.Context, req *enti
 func (t *TenderRepositoryImpl) DeleteTender(ctx context.Context, req *entity.DeleteTenderRequest) error {
 	return t.tenderRepository.DeleteTender(ctx, req)
 }
-	

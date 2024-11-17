@@ -1,40 +1,27 @@
-package postgres
+package tenders
 
 import (
 	"awesomeProject/internal/entity"
 	"awesomeProject/internal/infastructure/repository/databaseconnection"
 	postgres "awesomeProject/internal/infastructure/repository/postgres/sqlbuilder"
+	tenderusecase "awesomeProject/internal/usecase/tender"
 	"awesomeProject/logger"
+	"context"
 )
 
-type Repository struct {
+type TenderRepository struct {
 	db *databaseconnection.Database
 }
 
-func NewRepository() *Repository {
+func NewTenderRepository() tenderusecase.TenderRepository {
 	db, err := databaseconnection.Connect()
 	if err != nil {
 		logger.SetupLogger(err.Error())
 	}
-	return &Repository{db: db}
+	return &TenderRepository{db: db}
 }
 
-func (u *Repository) SaveUser(req *entity.CreateUsrRequest) (*entity.User, error) {
-	query, args, err := postgres.CreateUser(req)
-	if err != nil {
-		logger.SetupLogger(err.Error())
-		return nil, err
-	}
-	var user entity.User
-
-	if err := u.db.Db.QueryRow(query, args...).Scan(&user.ID, &user.Username, &user.Role, &user.Email); err != nil {
-		logger.SetupLogger(err.Error())
-		return nil, err
-	}
-	return &user, nil
-}
-
-func (u *Repository) SaveTender(req *entity.CreateTenderRequest) (*entity.Tender, error) {
+func (u *TenderRepository) SaveTender(ctx context.Context, req *entity.CreateTenderRequest) (*entity.Tender, error) {
 	query, args, err := postgres.CreateTender(req)
 	if err != nil {
 		logger.SetupLogger(err.Error())
@@ -50,7 +37,17 @@ func (u *Repository) SaveTender(req *entity.CreateTenderRequest) (*entity.Tender
 	return &tender, nil
 }
 
-func (u *Repository) GetTenders(req *entity.GetListTender) ([]entity.Tender, error) {
+func (u *TenderRepository) GetTenders(ctx context.Context, req *entity.GetListTender) ([]entity.Tender, error) {
+	// q, a, e := postgres.CloseExpiredTenders()
+	// if e != nil {
+	// 	logger.SetupLogger(e.Error())
+	// 	return nil, e
+	// }
+	// _, err := u.db.Db.Exec(q, a...)
+	// if err != nil {
+	// 	logger.SetupLogger(err.Error())
+	// 	return nil, err
+	// }
 	query, args, err := postgres.GetListTender(req)
 	if err != nil {
 		logger.SetupLogger(err.Error())
@@ -78,7 +75,7 @@ func (u *Repository) GetTenders(req *entity.GetListTender) ([]entity.Tender, err
 	return tenders, nil
 }
 
-func (u *Repository) UpdateTenderStatus(req *entity.UpdateTenderStatusRequest) (*entity.Tender, error) {
+func (u *TenderRepository) UpdateTenderStatus(ctx context.Context, req *entity.UpdateTenderStatusRequest) (*entity.Tender, error) {
 	query, args, err := postgres.UpdateTender(req)
 	if err != nil {
 		logger.SetupLogger(err.Error())
@@ -93,7 +90,7 @@ func (u *Repository) UpdateTenderStatus(req *entity.UpdateTenderStatusRequest) (
 	return &tender, nil
 }
 
-func (u *Repository) DeleteTender(req *entity.DeleteTenderRequest) error {
+func (u *TenderRepository) DeleteTender(ctx context.Context, req *entity.DeleteTenderRequest) error {
 	query, args, err := postgres.DeleteTender(req)
 	if err != nil {
 		logger.SetupLogger(err.Error())
@@ -101,10 +98,11 @@ func (u *Repository) DeleteTender(req *entity.DeleteTenderRequest) error {
 	}
 
 	_, err = u.db.Db.Exec(query, args...)
-	if err != nil {if err != nil {
-		logger.SetupLogger(err.Error())
-		return err
-	}
+	if err != nil {
+		if err != nil {
+			logger.SetupLogger(err.Error())
+			return err
+		}
 		logger.SetupLogger(err.Error())
 		return err
 	}

@@ -62,7 +62,7 @@ func (b *Bid) CreateBid(ctx context.Context, req *entity.CreateBidRequest) (*ent
 	return bid, nil
 }
 
-func (b *Bid) GetBids(ctx context.Context, req *entity.GetBidsRequest) ([]*entity.Bid, error) {
+func (b *Bid) GetBids(ctx context.Context, req *entity.GetBidsRequest) ([]entity.Bid, error) {
 	const operation = "bid.GetBids"
 	log := b.log.With(slog.String("operation", operation))
 	log.Info("Star")

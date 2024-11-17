@@ -15,6 +15,7 @@ CREATE TABLE tenders (
     budget NUMERIC(15, 2) NOT NULL CHECK (budget > 0),
     status VARCHAR(50) NOT NULL CHECK (status IN ('open', 'closed', 'awarded')),
     fileattachment TEXT,
+    created_at TIMESTAMP NOT NULL,
     CONSTRAINT fk_tender_client FOREIGN KEY (client_id) REFERENCES users (id) ON DELETE CASCADE
 );
 

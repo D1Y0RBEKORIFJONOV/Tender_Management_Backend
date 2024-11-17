@@ -14,14 +14,15 @@ type (
 		FileAttachment string    `json:"file_attachment" bson:"file_attachment,omitempty"`
 	}
 	CreateTenderRequest struct {
-		ClientID       string    `json:"client_id"`
-		Title          string    `json:"title"`
-		Description    string    `json:"description"`
-		Deadline       time.Time `json:"deadline"`
-		Budget         float64   `json:"budget"`
-		FileAttachment string    `json:"file_attachment,omitempty"`
-		PDFURL		   string	 `json:"pdfurl"`
+		ClientID       string    `json:"client_id" bson:"client_id" validate:"required,uuid"`               
+		Title          string    `json:"title" bson:"title" validate:"required,min=3,max=255"`                
+		Description    string    `json:"description" bson:"description" validate:"required"`               
+		Deadline       time.Time `json:"deadline" bson:"deadline" validate:"required,gt"`                     
+		Budget         float64   `json:"budget" bson:"budget" validate:"required,gt=0"`                      
+		FileAttachment string    `json:"file_attachment,omitempty" bson:"file_attachment,omitempty"`         
+		CreatedAt      time.Time `json:"created_at" bson:"created_at"`                                     
 	}
+
 	GetListTender struct {
 		Limit int
 		Page  int

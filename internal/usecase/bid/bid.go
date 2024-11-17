@@ -5,19 +5,19 @@ import (
 	"context"
 )
 
-type bid interface {
+type Bid interface {
 	CreateBid(ctx context.Context, req *entity.CreateBidRequest) (*entity.Bid, error)
-	GetBids(ctx context.Context, req *entity.GetBidsRequest) ([]*entity.Bid, error)
+	GetBids(ctx context.Context, req *entity.GetBidsRequest) ([]entity.Bid, error)
 	UpdateBid(ctx context.Context, req *entity.UpdateBidRequest) (*entity.Bid, error)
 	DeleteBid(ctx context.Context, req *entity.DeleteBidsRequest) (message string, err error)
 	AnnounceWinner(ctx context.Context, req *entity.AnnounceWinnerRequest) (*entity.Bid, error)
 }
 
 type BidUseCaseIml struct {
-	bid bid
+	bid Bid
 }
 
-func NewBidUseCaseIml(bid bid) *BidUseCaseIml {
+func NewBidUseCaseIml(bid Bid) *BidUseCaseIml {
 	return &BidUseCaseIml{
 		bid: bid,
 	}
@@ -26,7 +26,7 @@ func NewBidUseCaseIml(bid bid) *BidUseCaseIml {
 func (b *BidUseCaseIml) CreateBid(ctx context.Context, req *entity.CreateBidRequest) (*entity.Bid, error) {
 	return b.bid.CreateBid(ctx, req)
 }
-func (b *BidUseCaseIml) GetBids(ctx context.Context, req *entity.GetBidsRequest) ([]*entity.Bid, error) {
+func (b *BidUseCaseIml) GetBids(ctx context.Context, req *entity.GetBidsRequest) ([]entity.Bid, error) {
 	return b.bid.GetBids(ctx, req)
 }
 func (b *BidUseCaseIml) UpdateBid(ctx context.Context, req *entity.UpdateBidRequest) (*entity.Bid, error) {
