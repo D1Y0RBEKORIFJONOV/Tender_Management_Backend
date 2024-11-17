@@ -208,19 +208,13 @@ const docTemplate = `{
                 ],
                 "description": "Create a new tender and optionally upload a PDF",
                 "consumes": [
-                    "multipart/form-data"
+                    "application/json"
                 ],
                 "tags": [
                     "tenders"
                 ],
                 "summary": "Create a new tender",
                 "parameters": [
-                    {
-                        "type": "file",
-                        "description": "Upload PDF",
-                        "name": "pdf",
-                        "in": "formData"
-                    },
                     {
                         "description": "Tender data",
                         "name": "data",
@@ -574,22 +568,9 @@ const docTemplate = `{
         },
         "entity.CreateTenderRequest": {
             "type": "object",
-            "required": [
-                "budget",
-                "client_id",
-                "deadline",
-                "description",
-                "title"
-            ],
             "properties": {
                 "budget": {
                     "type": "number"
-                },
-                "client_id": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
                 },
                 "deadline": {
                     "type": "string"
@@ -597,13 +578,8 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
-                "file_attachment": {
-                    "type": "string"
-                },
                 "title": {
-                    "type": "string",
-                    "maxLength": 255,
-                    "minLength": 3
+                    "type": "string"
                 }
             }
         },
@@ -681,6 +657,9 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "client_id": {
+                    "type": "string"
+                },
+                "created_at": {
                     "type": "string"
                 },
                 "deadline": {

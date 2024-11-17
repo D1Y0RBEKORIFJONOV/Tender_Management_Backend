@@ -142,7 +142,7 @@ func (s *Server) writeMessage(messages entity.MessageBid, conn *websocket.Conn) 
 			log.Println(err)
 		}
 		err = conn.WriteJSON(message)
-	} else {
+	} else if messages.SenderName == "tender" {
 		var message MessageTender
 		message.Message = "Congratulations, you have won this tender!"
 		err := json.Unmarshal([]byte(messages.Status), &message.Tender)
@@ -150,6 +150,11 @@ func (s *Server) writeMessage(messages entity.MessageBid, conn *websocket.Conn) 
 			log.Println(err)
 		}
 		err = conn.WriteJSON(message)
+		if err != nil {
+			log.Println(err)
+		}
+	} else {
+		err := conn.WriteMessage(websocket.TextMessage, []byte(messages.Status))
 		if err != nil {
 			log.Println(err)
 		}

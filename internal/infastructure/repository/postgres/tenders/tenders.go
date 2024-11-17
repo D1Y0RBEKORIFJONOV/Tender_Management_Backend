@@ -30,7 +30,7 @@ func (u *TenderRepository) SaveTender(ctx context.Context, req *entity.CreateTen
 
 	var tender entity.Tender
 
-	if err := u.db.Db.QueryRow(query, args...).Scan(&tender.ID, &tender.ClientID, &tender.Title, &tender.Description, &tender.Deadline, &tender.Budget, &tender.Status, &tender.FileAttachment); err != nil {
+	if err := u.db.Db.QueryRow(query, args...).Scan(&tender.ID, &tender.ClientID, &tender.Title, &tender.Description, &tender.Deadline, &tender.Budget, &tender.Status, &tender.FileAttachment, &tender.CreatedAt); err != nil {
 		logger.SetupLogger(err.Error())
 		return nil, err
 	}

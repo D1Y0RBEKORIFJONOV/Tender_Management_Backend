@@ -5,20 +5,18 @@ import (
 	tenderusecase "awesomeProject/internal/usecase/tender"
 	"context"
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
-	"time"
-
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
-	"github.com/minio/minio-go/v7"
-	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
-const maxFileSize = 10 * 1024 * 1024 
+const maxFileSize = 10 * 1024 * 1024
 
 type Tender struct {
 	tender     tenderusecase.TenderUseCaseIml
@@ -57,8 +55,7 @@ func NewTender(tender tenderusecase.TenderUseCaseIml) *Tender {
 // @Summary Create a new tender
 // @Description Create a new tender and optionally upload a PDF
 // @Tags tenders
-// @Accept multipart/form-data
-// @Param pdf formData file false "Upload PDF"
+// @Accept json
 // @Param data body entity.CreateTenderRequest true "Tender data"
 // @Success 201 {object} string
 // @Failure 400 {object} string
@@ -124,24 +121,22 @@ func (t *Tender) GetTenders(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	id, ok := c.Get("user_id")
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user_id not found"})
+		return
+	}
 
+	if req.Value == "" {
+		req.Field = "client_id"
+		req.Value = id.(string)
+	}
+	log.Fatal(req)
 	res, err := t.tender.GetTenders(c.Request.Context(), req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	for i, tender := range res {
-		if tender.FileAttachment != "" {
-			presignedURL, err := t.miniClient.PresignedGetObject(context.Background(), t.bucketName, tender.FileAttachment, 24*time.Hour, nil)
-			if err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-				return
-			}
-			res[i].FileAttachment = presignedURL.String()
-		}
-	}
-
 	c.JSON(http.StatusOK, res)
 }
 

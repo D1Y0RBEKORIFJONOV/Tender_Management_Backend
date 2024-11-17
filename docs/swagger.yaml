@@ -42,26 +42,12 @@ definitions:
     properties:
       budget:
         type: number
-      client_id:
-        type: string
-      created_at:
-        type: string
       deadline:
         type: string
       description:
         type: string
-      file_attachment:
-        type: string
       title:
-        maxLength: 255
-        minLength: 3
         type: string
-    required:
-    - budget
-    - client_id
-    - deadline
-    - description
-    - title
     type: object
   entity.CreateUsrRequest:
     properties:
@@ -111,6 +97,8 @@ definitions:
       budget:
         type: number
       client_id:
+        type: string
+      created_at:
         type: string
       deadline:
         type: string
@@ -286,13 +274,9 @@ paths:
       - tenders
     post:
       consumes:
-      - multipart/form-data
+      - application/json
       description: Create a new tender and optionally upload a PDF
       parameters:
-      - description: Upload PDF
-        in: formData
-        name: pdf
-        type: file
       - description: Tender data
         in: body
         name: data

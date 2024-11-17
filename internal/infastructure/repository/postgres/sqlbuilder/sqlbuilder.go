@@ -58,7 +58,7 @@ func CreateTender(req *entity.CreateTenderRequest) (string, []interface{}, error
 	query, args, err := squirrel.Insert("tenders").
 		Columns("id", "client_id", "title", "description", "deadline", "budget", "status", "fileattachment,created_at").
 		Values(id, req.ClientID, req.Title, req.Description, req.Deadline, req.Budget, "open", req.FileAttachment, req.CreatedAt).
-		PlaceholderFormat(squirrel.Dollar).
+		PlaceholderFormat(squirrel.Dollar).Suffix("RETURNING *").
 		ToSql()
 	if err != nil {
 		logger.SetupLogger(fmt.Sprintf("Something went wrong while Creating tender %v", err))
