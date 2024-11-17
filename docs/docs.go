@@ -171,17 +171,6 @@ const docTemplate = `{
                     "tenders"
                 ],
                 "summary": "Get tenders",
-                "parameters": [
-                    {
-                        "description": "Tender filter",
-                        "name": "filter",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entity.GetListTender"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -549,9 +538,6 @@ const docTemplate = `{
                 "comments": {
                     "type": "string"
                 },
-                "contractor_id": {
-                    "type": "string"
-                },
                 "delivery_time": {
                     "type": "integer"
                 },
@@ -608,23 +594,6 @@ const docTemplate = `{
                 },
                 "field": {
                     "type": "string"
-                },
-                "value": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.GetListTender": {
-            "type": "object",
-            "properties": {
-                "field": {
-                    "type": "string"
-                },
-                "limit": {
-                    "type": "integer"
-                },
-                "page": {
-                    "type": "integer"
                 },
                 "value": {
                     "type": "string"
@@ -705,12 +674,6 @@ const docTemplate = `{
         "entity.UpdateTenderStatusRequest": {
             "type": "object",
             "properties": {
-                "client_id": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
                 "new_status": {
                     "type": "string"
                 }

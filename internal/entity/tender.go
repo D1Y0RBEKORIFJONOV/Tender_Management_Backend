@@ -31,8 +31,8 @@ type (
 		Value string
 	}
 	UpdateTenderStatusRequest struct {
-		ID        string `json:"id"`
-		ClientID  string `json:"client_id"`
+		ID        string `json:"-"`
+		ClientID  string `json:"-"`
 		NewStatus string `json:"new_status"`
 	}
 	DeleteTenderRequest struct {

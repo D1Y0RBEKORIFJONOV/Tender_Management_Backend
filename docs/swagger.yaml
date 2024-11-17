@@ -27,8 +27,6 @@ definitions:
     properties:
       comments:
         type: string
-      contractor_id:
-        type: string
       delivery_time:
         type: integer
       price:
@@ -66,17 +64,6 @@ definitions:
         type: string
       field:
         type: string
-      value:
-        type: string
-    type: object
-  entity.GetListTender:
-    properties:
-      field:
-        type: string
-      limit:
-        type: integer
-      page:
-        type: integer
       value:
         type: string
     type: object
@@ -128,10 +115,6 @@ definitions:
     type: object
   entity.UpdateTenderStatusRequest:
     properties:
-      client_id:
-        type: string
-      id:
-        type: string
       new_status:
         type: string
     type: object
@@ -249,13 +232,6 @@ paths:
       consumes:
       - application/json
       description: Retrieve tenders and their associated PDFs
-      parameters:
-      - description: Tender filter
-        in: body
-        name: filter
-        required: true
-        schema:
-          $ref: '#/definitions/entity.GetListTender'
       responses:
         "200":
           description: OK

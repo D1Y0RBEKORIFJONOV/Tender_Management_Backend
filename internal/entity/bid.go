@@ -13,7 +13,7 @@ type (
 
 	CreateBidRequest struct {
 		TenderID     string  `json:"tender_id" bson:"tender_id"`
-		ContractorID string  `json:"contractor_id" bson:"contractor_id"`
+		ContractorID string  `json:"-" bson:"contractor_id"`
 		Price        float64 `json:"price" bson:"price"`
 		DeliveryTime int     `json:"delivery_time" bson:"delivery_time"`
 		Comments     string  `json:"comments,omitempty" bson:"comments,omitempty"`
