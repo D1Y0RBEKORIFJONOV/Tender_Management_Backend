@@ -43,7 +43,7 @@ func HaveUser(req string) (string, []interface{}, error) {
 }
 
 func Getuser(req string) (string, []interface{}, error) {
-	query, args, err := squirrel.Select("*").From("user").
+	query, args, err := squirrel.Select("*").From("users").
 		Where(squirrel.Eq{"email": req}).
 		PlaceholderFormat(squirrel.Dollar).
 		ToSql()
