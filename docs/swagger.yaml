@@ -42,26 +42,12 @@ definitions:
     properties:
       budget:
         type: number
-      client_id:
-        type: string
-      created_at:
-        type: string
       deadline:
         type: string
       description:
         type: string
-      file_attachment:
-        type: string
       title:
-        maxLength: 255
-        minLength: 3
         type: string
-    required:
-    - budget
-    - client_id
-    - deadline
-    - description
-    - title
     type: object
   entity.CreateUsrRequest:
     properties:
@@ -83,17 +69,6 @@ definitions:
       value:
         type: string
     type: object
-  entity.GetListTender:
-    properties:
-      field:
-        type: string
-      limit:
-        type: integer
-      page:
-        type: integer
-      value:
-        type: string
-    type: object
   entity.LoginRequest:
     properties:
       email:
@@ -111,6 +86,8 @@ definitions:
       budget:
         type: number
       client_id:
+        type: string
+      created_at:
         type: string
       deadline:
         type: string
@@ -260,14 +237,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Retrieve tenders and their associated PDFs
-      parameters:
-      - description: Tender filter
-        in: body
-        name: filter
-        required: true
-        schema:
-          $ref: '#/definitions/entity.GetListTender'
+      description: Retrieve tenders for the authenticated client
       responses:
         "200":
           description: OK
@@ -286,13 +256,9 @@ paths:
       - tenders
     post:
       consumes:
-      - multipart/form-data
+      - application/json
       description: Create a new tender and optionally upload a PDF
       parameters:
-      - description: Upload PDF
-        in: formData
-        name: pdf
-        type: file
       - description: Tender data
         in: body
         name: data

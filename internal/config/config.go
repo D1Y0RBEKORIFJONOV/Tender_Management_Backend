@@ -72,12 +72,6 @@ func Token() string {
 func New() *Config {
 	var config Config
 
-
-	config.Database.User=getEnv("User","postgres")
-	config.Database.Password=getEnv("Password","2005")
-	config.Database.Host=getEnv("Host","localhost")
-	config.Database.Port=getEnv("Port","5432")
-	config.Database.Dbname=getEnv("Dbname","udevs")
 	config.Database.User = getEnv("User", "postgres")
 	config.Database.Password = getEnv("Password", "2005")
 	config.Database.Host = getEnv("Host", "localhost")

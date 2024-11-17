@@ -1,11 +1,11 @@
 p, unauthorized, /register, POST
 p, unauthorized, /login, POST
-p, client, /tenders/, POST
-p, client, /tenders/, GET
-p, client, /tenders/, PUT
-p, client, /tenders/, DELETE
+p, client, /tenders, POST
+p, client, /tenders, GET
+p, client, /tenders, PUT
+p, client, /tenders, DELETE
 
-p, contractor, /tenders/, GET
+p, contractor, /tenders, GET
 p, contractor, /budget/*, (.*)
 p, contractor, /income/*, (.*)
 p, contractor, /report/*, (.*)

@@ -79,7 +79,7 @@ func NewAccessToken(user *entity.User) (string, error) {
 	claims["uid"] = user.ID
 	claims["email"] = user.Email
 	claims["exp"] = time.Now().Add(cfg.Token.AccessTTL).Unix()
-	claims["role"] = "user"
+	claims["role"] = user.Role
 
 	tokenString, err := token.SignedString([]byte(config.Token()))
 	if err != nil {
@@ -94,7 +94,7 @@ func NewRefreshToken(user *entity.User) (string, error) {
 	claims := token.Claims.(jwt.MapClaims)
 	claims["uid"] = user.ID
 	claims["exp"] = time.Now().Add(cfg.Token.RefreshTTL).Unix()
-	claims["role"] = "user"
+	claims["role"] = user.Role
 	claims["email"] = user.Email
 
 	tokenString, err := token.SignedString([]byte(config.Token()))

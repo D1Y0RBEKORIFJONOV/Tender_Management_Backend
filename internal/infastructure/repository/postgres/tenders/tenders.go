@@ -7,6 +7,7 @@ import (
 	tenderusecase "awesomeProject/internal/usecase/tender"
 	"awesomeProject/logger"
 	"context"
+	"fmt"
 )
 
 type TenderRepository struct {
@@ -30,7 +31,7 @@ func (u *TenderRepository) SaveTender(ctx context.Context, req *entity.CreateTen
 
 	var tender entity.Tender
 
-	if err := u.db.Db.QueryRow(query, args...).Scan(&tender.ID, &tender.ClientID, &tender.Title, &tender.Description, &tender.Deadline, &tender.Budget, &tender.Status, &tender.FileAttachment); err != nil {
+	if err := u.db.Db.QueryRow(query, args...).Scan(&tender.ID, &tender.ClientID, &tender.Title, &tender.Description, &tender.Deadline, &tender.Budget, &tender.Status, &tender.FileAttachment, &tender.CreatedAt); err != nil {
 		logger.SetupLogger(err.Error())
 		return nil, err
 	}
@@ -64,8 +65,8 @@ func (u *TenderRepository) GetTenders(ctx context.Context, req *entity.GetListTe
 
 	for dtenders.Next() {
 		var tender entity.Tender
-
-		if err := dtenders.Scan(&tender.ID, &tender.ClientID, &tender.Title, &tender.Description, &tender.Deadline, &tender.Budget, &tender.Status, &tender.FileAttachment); err != nil {
+	fmt.Println(dtenders.Next())
+		if err := dtenders.Scan(&tender.ID, &tender.ClientID, &tender.Title, &tender.Description, &tender.Deadline, &tender.Budget, &tender.Status, &tender.FileAttachment,&tender.CreatedAt); err != nil {
 			logger.SetupLogger(err.Error())
 			return nil, err
 		}

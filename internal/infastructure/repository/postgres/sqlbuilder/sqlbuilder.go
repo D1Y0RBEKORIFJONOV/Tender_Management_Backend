@@ -59,7 +59,7 @@ func CreateTender(req *entity.CreateTenderRequest) (string, []interface{}, error
 	query, args, err := squirrel.Insert("tenders").
 		Columns("id", "client_id", "title", "description", "deadline", "budget", "status", "fileattachment,created_at").
 		Values(id, req.ClientID, req.Title, req.Description, req.Deadline, req.Budget, "open", req.FileAttachment, time.Now()).
-		PlaceholderFormat(squirrel.Dollar).
+		PlaceholderFormat(squirrel.Dollar).Suffix("RETURNING *").
 		ToSql()
 	if err != nil {
 		logger.SetupLogger(fmt.Sprintf("Something went wrong while Creating tender %v", err))
@@ -70,26 +70,26 @@ func CreateTender(req *entity.CreateTenderRequest) (string, []interface{}, error
 
 func GetListTender(req *entity.GetListTender) (string, []interface{}, error) {
 	queryBuilder := squirrel.
-		Select("*").
-		From("tenders").
-		PlaceholderFormat(squirrel.Dollar)
-
+	  Select("*").
+	  From("tenders").
+	  PlaceholderFormat(squirrel.Dollar)
+  
 	if req.Field != "" && req.Value != "" {
-		queryBuilder = queryBuilder.Where(squirrel.Eq{req.Field: req.Value})
+	  queryBuilder = queryBuilder.Where(squirrel.Eq{req.Field: req.Value})
 	}
-
+  
 	if req.Limit > 0 && req.Page > 0 {
-		offset := (req.Page - 1) * req.Limit
-		queryBuilder = queryBuilder.Limit(uint64(req.Limit)).Offset(uint64(offset))
+	  offset := (req.Page - 1) * req.Limit
+	  queryBuilder = queryBuilder.Limit(uint64(req.Limit)).Offset(uint64(offset))
 	}
-
+  
 	query, args, err := queryBuilder.ToSql()
 	if err != nil {
-		return "", nil, fmt.Errorf("error generating tenders query: %v", err)
+	  return "", nil, fmt.Errorf("error generating tenders query: %v", err)
 	}
-
+  
 	return query, args, nil
-}
+  }
 
 // func GetValidTenders() (string, []interface{}, error) {
 // 	query, args, err := squirrel.

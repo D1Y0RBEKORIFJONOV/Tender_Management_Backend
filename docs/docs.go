@@ -163,7 +163,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Retrieve tenders and their associated PDFs",
+                "description": "Retrieve tenders for the authenticated client",
                 "consumes": [
                     "application/json"
                 ],
@@ -171,17 +171,6 @@ const docTemplate = `{
                     "tenders"
                 ],
                 "summary": "Get tenders",
-                "parameters": [
-                    {
-                        "description": "Tender filter",
-                        "name": "filter",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entity.GetListTender"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -208,19 +197,13 @@ const docTemplate = `{
                 ],
                 "description": "Create a new tender and optionally upload a PDF",
                 "consumes": [
-                    "multipart/form-data"
+                    "application/json"
                 ],
                 "tags": [
                     "tenders"
                 ],
                 "summary": "Create a new tender",
                 "parameters": [
-                    {
-                        "type": "file",
-                        "description": "Upload PDF",
-                        "name": "pdf",
-                        "in": "formData"
-                    },
                     {
                         "description": "Tender data",
                         "name": "data",
@@ -574,22 +557,9 @@ const docTemplate = `{
         },
         "entity.CreateTenderRequest": {
             "type": "object",
-            "required": [
-                "budget",
-                "client_id",
-                "deadline",
-                "description",
-                "title"
-            ],
             "properties": {
                 "budget": {
                     "type": "number"
-                },
-                "client_id": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
                 },
                 "deadline": {
                     "type": "string"
@@ -597,13 +567,8 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
-                "file_attachment": {
-                    "type": "string"
-                },
                 "title": {
-                    "type": "string",
-                    "maxLength": 255,
-                    "minLength": 3
+                    "type": "string"
                 }
             }
         },
@@ -638,23 +603,6 @@ const docTemplate = `{
                 }
             }
         },
-        "entity.GetListTender": {
-            "type": "object",
-            "properties": {
-                "field": {
-                    "type": "string"
-                },
-                "limit": {
-                    "type": "integer"
-                },
-                "page": {
-                    "type": "integer"
-                },
-                "value": {
-                    "type": "string"
-                }
-            }
-        },
         "entity.LoginRequest": {
             "type": "object",
             "properties": {
@@ -681,6 +629,9 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "client_id": {
+                    "type": "string"
+                },
+                "created_at": {
                     "type": "string"
                 },
                 "deadline": {
@@ -778,8 +729,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "This is a sample server for a Tender  system.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	//LeftDelim:        "{{",
-	//RightDelim:       "}}",
+	// LeftDelim:        "{{",
+	// RightDelim:       "}}",
 }
 
 func init() {

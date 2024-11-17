@@ -12,15 +12,16 @@ type (
 		Budget         float64   `json:"budget" bson:"budget"`
 		Status         string    `json:"status" bson:"status"`
 		FileAttachment string    `json:"file_attachment" bson:"file_attachment,omitempty"`
+		CreatedAt      time.Time `json:"created_at" bson:"created_at"`
 	}
 	CreateTenderRequest struct {
-		ClientID       string    `json:"client_id" bson:"client_id" validate:"required,uuid"`               
-		Title          string    `json:"title" bson:"title" validate:"required,min=3,max=255"`                
-		Description    string    `json:"description" bson:"description" validate:"required"`               
-		Deadline       time.Time `json:"deadline" bson:"deadline" validate:"required,gt"`                     
-		Budget         float64   `json:"budget" bson:"budget" validate:"required,gt=0"`                      
-		FileAttachment string    `json:"file_attachment,omitempty" bson:"file_attachment,omitempty"`         
-		CreatedAt      time.Time `json:"created_at" bson:"created_at"`                                     
+		ClientID       string    `json:"-" bson:"client_id" `
+		Title          string    `json:"title" bson:"title" `
+		Description    string    `json:"description" bson:"description" `
+		Deadline       time.Time  `json:"deadline" bson:"deadline" `
+		Budget         float64   `json:"budget" bson:"budget"`
+		FileAttachment string    `json:"-" bson:"file_attachment,omitempty"`
+		CreatedAt      time.Time `json:"-" bson:"created_at"`
 	}
 
 	GetListTender struct {

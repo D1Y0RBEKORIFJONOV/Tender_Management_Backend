@@ -62,6 +62,7 @@ func Middleware(c *gin.Context) {
 	c.Set("user_id", id)
 	email, _ := token.GetEmailFromToken(c.Request)
 	c.Set("email", email)
+
 	c.Next()
 }
 
@@ -110,6 +111,7 @@ func GetRole(r *http.Request) (string, error) {
 		log.Println("Error while extracting claims: ", err)
 		return "unauthorized", err
 	}
-
-	return claims["role"].(string), nil
+	role := claims["role"].(string)
+	fmt.Println(role, "ROLE")
+	return role, nil
 }

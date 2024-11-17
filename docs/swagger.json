@@ -154,7 +154,7 @@
                         "Bearer": []
                     }
                 ],
-                "description": "Retrieve tenders and their associated PDFs",
+                "description": "Retrieve tenders for the authenticated client",
                 "consumes": [
                     "application/json"
                 ],
@@ -162,17 +162,6 @@
                     "tenders"
                 ],
                 "summary": "Get tenders",
-                "parameters": [
-                    {
-                        "description": "Tender filter",
-                        "name": "filter",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entity.GetListTender"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -199,19 +188,13 @@
                 ],
                 "description": "Create a new tender and optionally upload a PDF",
                 "consumes": [
-                    "multipart/form-data"
+                    "application/json"
                 ],
                 "tags": [
                     "tenders"
                 ],
                 "summary": "Create a new tender",
                 "parameters": [
-                    {
-                        "type": "file",
-                        "description": "Upload PDF",
-                        "name": "pdf",
-                        "in": "formData"
-                    },
                     {
                         "description": "Tender data",
                         "name": "data",
@@ -565,22 +548,9 @@
         },
         "entity.CreateTenderRequest": {
             "type": "object",
-            "required": [
-                "budget",
-                "client_id",
-                "deadline",
-                "description",
-                "title"
-            ],
             "properties": {
                 "budget": {
                     "type": "number"
-                },
-                "client_id": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
                 },
                 "deadline": {
                     "type": "string"
@@ -588,13 +558,8 @@
                 "description": {
                     "type": "string"
                 },
-                "file_attachment": {
-                    "type": "string"
-                },
                 "title": {
-                    "type": "string",
-                    "maxLength": 255,
-                    "minLength": 3
+                    "type": "string"
                 }
             }
         },
@@ -629,23 +594,6 @@
                 }
             }
         },
-        "entity.GetListTender": {
-            "type": "object",
-            "properties": {
-                "field": {
-                    "type": "string"
-                },
-                "limit": {
-                    "type": "integer"
-                },
-                "page": {
-                    "type": "integer"
-                },
-                "value": {
-                    "type": "string"
-                }
-            }
-        },
         "entity.LoginRequest": {
             "type": "object",
             "properties": {
@@ -672,6 +620,9 @@
                     "type": "number"
                 },
                 "client_id": {
+                    "type": "string"
+                },
+                "created_at": {
                     "type": "string"
                 },
                 "deadline": {
