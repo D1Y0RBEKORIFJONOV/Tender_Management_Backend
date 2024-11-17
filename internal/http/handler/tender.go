@@ -154,6 +154,7 @@ func (t *Tender) UpdateTenderStatus(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user_id not found"})
 		return
 	}
+
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -186,10 +187,6 @@ func (t *Tender) DeleteTender(c *gin.Context) {
 	id, ok := c.Get("user_id")
 	if !ok {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user_id not found"})
-		return
-	}
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	req.ClientID = id.(string)
