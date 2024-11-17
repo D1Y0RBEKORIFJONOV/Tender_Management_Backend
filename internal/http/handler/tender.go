@@ -18,7 +18,7 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
-const maxFileSize = 10 * 1024 * 1024 // Максимальный размер файла 10MB
+const maxFileSize = 10 * 1024 * 1024 
 
 type Tender struct {
 	tender     tenderusecase.TenderUseCaseIml
@@ -61,7 +61,7 @@ func NewTender(tender tenderusecase.TenderUseCaseIml) *Tender {
 // @Param pdf formData file false "Upload PDF"
 // @Param data body entity.CreateTenderRequest true "Tender data"
 // @Success 201 {object} string
-// @Failure 400 {object} gin.H
+// @Failure 400 {object} string
 // @Security Bearer
 // @Router /tenders [post]
 func (t *Tender) CreateTender(c *gin.Context) {
@@ -114,8 +114,8 @@ func (t *Tender) CreateTender(c *gin.Context) {
 // @Tags tenders
 // @Accept json
 // @Param filter body entity.GetListTender true "Tender filter"
-// @Success 200 {array} entity.TenderResponse
-// @Failure 400 {object} gin.H
+// @Success 200 {object} []entity.Tender
+// @Failure 400 {object} string
 // @Security Bearer
 // @Router /tenders [get]
 func (t *Tender) GetTenders(c *gin.Context) {

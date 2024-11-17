@@ -4,7 +4,7 @@ import (
 	"awesomeProject/internal/entity"
 	authusecase "awesomeProject/internal/usecase/auth"
 	"net/http"
-
+	_ "awesomeProject/docs"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,7 +23,7 @@ func NewAuth(auth authusecase.UserUseCaseImpl) *Auth {
 // @in 				header
 // @name Authorization
 // @description Enter the token in the format `Bearer {token}`
-// @host localhost:7777
+// @host localhost:9006
 // @BasePath /
 
 // Register godoc
