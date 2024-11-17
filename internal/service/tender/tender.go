@@ -51,7 +51,7 @@ func (t *Tender) GetTenders(ctx context.Context, req entity.GetListTender) ([]en
 		if tender.Deadline.Before(time.Now()) {
 			_, err = t.tender.UpdateTenderStatus(ctx, &entity.UpdateTenderStatusRequest{
 				ID:        tender.ID,
-				NewStatus: "expired",
+				NewStatus: "closed",
 				ClientID:  tender.ClientID,
 			})
 			if err != nil {

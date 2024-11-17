@@ -119,7 +119,7 @@ func (b *Bid) AnnounceWinner(ctx context.Context, req *entity.AnnounceWinnerRequ
 	}
 	_, err = b.tender.UpdateTenderStatus(ctx, &entity.UpdateTenderStatusRequest{
 		ID:        bid.TenderID,
-		NewStatus: "closed",
+		NewStatus: "awarded",
 		ClientID:  tender.ClientID,
 	})
 	if err != nil {

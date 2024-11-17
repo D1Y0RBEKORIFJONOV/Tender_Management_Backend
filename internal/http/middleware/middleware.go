@@ -16,8 +16,8 @@ import (
 
 var (
 	rateLimiters = map[string]*rate.Limiter{
-		"user":         rate.NewLimiter(1, 10),
-		"unauthorized": rate.NewLimiter(1, 10),
+		"user":         rate.NewLimiter(5.0/60.0, 1),
+		"unauthorized": rate.NewLimiter(5.0/60.0, 1),
 	}
 )
 
