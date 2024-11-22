@@ -11,10 +11,10 @@ migrateforce:
 	migrate -path migrations -database ${DB_URL} force
 
 run_db:
-	 docker-compose up -d db
+	 docker compose up -d db
 
 run:
-	 docker-compose up --build
+	 docker compose up --build
 
 stop:
 	docker-compose down

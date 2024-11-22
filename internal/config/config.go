@@ -73,7 +73,7 @@ func New() *Config {
 	var config Config
 
 	config.Database.User = getEnv("User", "postgres")
-	config.Database.Password = getEnv("Password", "2005")
+	config.Database.Password = getEnv("Password", "Abdu0811")
 	config.Database.Host = getEnv("Host", "postgresdb")
 	config.Database.Port = getEnv("Port", "5432")
 	config.Database.Dbname = getEnv("Dbname", "udevs")
@@ -103,7 +103,6 @@ func New() *Config {
 
 	config.NotificationUrl = getEnv("Notification_URL", "notification_service:9001")
 	config.RedisURL = getEnv("REDIS_URL", "redis_container:6379")
-
 
 	config.ReportUcl = getEnv("REPORT_UCL", "report-service:8000")
 	config.Email.SmtHost = getEnv("SMT_HOST", "smtp.gmail.com")
