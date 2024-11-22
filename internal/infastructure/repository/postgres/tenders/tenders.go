@@ -7,7 +7,7 @@ import (
 	tenderusecase "awesomeProject/internal/usecase/tender"
 	"awesomeProject/logger"
 	"context"
-	"fmt"
+	"log"
 )
 
 type TenderRepository struct {
@@ -45,7 +45,6 @@ func (u *TenderRepository) GetTenders(ctx context.Context, req *entity.GetListTe
 	}
 
 	var tenders []entity.Tender
-
 	dtenders, err := u.db.Db.Query(query, args...)
 	if err != nil {
 		logger.SetupLogger(err.Error())
@@ -54,8 +53,7 @@ func (u *TenderRepository) GetTenders(ctx context.Context, req *entity.GetListTe
 
 	for dtenders.Next() {
 		var tender entity.Tender
-	fmt.Println(dtenders.Next())
-		if err := dtenders.Scan(&tender.ID, &tender.ClientID, &tender.Title, &tender.Description, &tender.Deadline, &tender.Budget, &tender.Status, &tender.FileAttachment,&tender.CreatedAt); err != nil {
+		if err := dtenders.Scan(&tender.ID, &tender.ClientID, &tender.Title, &tender.Description, &tender.Deadline, &tender.Budget, &tender.Status, &tender.FileAttachment, &tender.CreatedAt); err != nil {
 			logger.SetupLogger(err.Error())
 			return nil, err
 		}
@@ -72,6 +70,7 @@ func (u *TenderRepository) UpdateTenderStatus(ctx context.Context, req *entity.U
 		return nil, err
 	}
 	var tender entity.Tender
+	log.Fatal(query, args)
 	if err := u.db.Db.QueryRow(query, args...).Scan(&tender.ID, &tender.ClientID, &tender.Title, &tender.Description, &tender.Deadline, &tender.Budget, &tender.Status, &tender.FileAttachment, &tender.CreatedAt); err != nil {
 		logger.SetupLogger(err.Error())
 		return nil, err

@@ -126,7 +126,7 @@ func UpdateTender(req *entity.UpdateTenderStatusRequest) (string, []interface{},
 	query, args, err := squirrel.
 		Update("tenders").
 		Set("status", req.NewStatus).
-		Where(squirrel.Eq{"id": req.ID}, squirrel.Eq{"client_id": req.ClientID}).
+		Where(squirrel.Eq{"id": req.ID, "client_id": req.ClientID}).
 		PlaceholderFormat(squirrel.Dollar).
 		Suffix("RETURNING *").
 		ToSql()
@@ -134,7 +134,6 @@ func UpdateTender(req *entity.UpdateTenderStatusRequest) (string, []interface{},
 		logger.SetupLogger(fmt.Sprintf("Something went wrong while updating tenders %v", err))
 		return "", nil, err
 	}
-	fmt.Println(query, args)
 	return query, args, err
 }
 

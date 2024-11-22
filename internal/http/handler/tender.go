@@ -6,14 +6,13 @@ import (
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
+	"github.com/go-playground/validator/v10"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
-	"path/filepath"
 )
 
 const maxFileSize = 10 * 1024 * 1024
@@ -60,51 +59,42 @@ func NewTender(tender tenderusecase.TenderUseCaseIml) *Tender {
 // @Success 201 {object} string
 // @Failure 400 {object} string
 // @Security Bearer
-// @Router /tenders [post]
+// @Router /api/client/tenders [post]
 func (t *Tender) CreateTender(c *gin.Context) {
 	var req entity.CreateTenderRequest
+
 	id, ok := c.Get("user_id")
 	if !ok {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "user_id not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "user_id not found"})
 		return
 	}
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
 	req.ClientID = id.(string)
 
-	file, _ := c.FormFile("pdf")
-	if file != nil {
-		ext := filepath.Ext(file.Filename)
-		if ext != ".pdf" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid file type, must be .pdf"})
-			return
-		}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid input",
+		})
+		return
+	}
 
-		if file.Size > maxFileSize {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "File size exceeds 10MB limit"})
-			return
-		}
-
-		newFileName := uuid.NewString() + ext
-		err := t.uploadPDF(c, file, newFileName)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		req.FileAttachment = newFileName
+	if err := validate.Struct(req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid input",
+			"details": err.Error(),
+		})
+		return
 	}
 
 	message, err := t.tender.CreateTender(c.Request.Context(), req)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Tender created successfully", "data": message})
+	c.JSON(http.StatusCreated, message)
 }
+
+var validate = validator.New()
 
 // GetTenders godoc
 // @Summary Get tenders
@@ -114,11 +104,12 @@ func (t *Tender) CreateTender(c *gin.Context) {
 // @Success 200 {object} []entity.Tender
 // @Failure 400 {object} string
 // @Security Bearer
-// @Router /tenders [get]
+// @Router /api/client/tenders [get]
 func (t *Tender) GetTenders(c *gin.Context) {
 	var req entity.GetListTender
 	id, ok := c.Get("user_id")
 	if !ok {
+		log.Println("SUKAAAAAAAAAAAAAAAAAAAAQQQQ:")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user_id not found"})
 		return
 	}
@@ -128,6 +119,7 @@ func (t *Tender) GetTenders(c *gin.Context) {
 	}
 	res, err := t.tender.GetTenders(c.Request.Context(), req)
 	if err != nil {
+		log.Println("SUKAAAAAAAAAAAAAAAAAAAA:", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -140,13 +132,13 @@ func (t *Tender) GetTenders(c *gin.Context) {
 // @Tags tenders
 // @Accept json
 // @Produce json
-// @Param id path string true "Tender ID"
+// @Param tenderId path string true "Tender ID"
 // @Param tender body entity.UpdateTenderStatusRequest true "Tender update request body"
 // @Success 200 {object} entity.Tender
 // @Failure 400 {object} string
 // @Failure 500 {object} string
 // @Security Bearer
-// @Router /tenders/{id} [put]
+// @Router /api/client/tenders{tenderId} [put]
 func (t *Tender) UpdateTenderStatus(c *gin.Context) {
 	var req entity.UpdateTenderStatusRequest
 	id, ok := c.Get("user_id")
@@ -159,7 +151,7 @@ func (t *Tender) UpdateTenderStatus(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	req.ID = c.Param("id")
+	req.ID = c.Param("tenderId")
 	req.ClientID = id.(string)
 
 	res, err := t.tender.UpdateTenderStatus(c.Request.Context(), req)
@@ -181,7 +173,7 @@ func (t *Tender) UpdateTenderStatus(c *gin.Context) {
 // @Failure 400 {object} string
 // @Failure 500 {object} string
 // @Security Bearer
-// @Router /tender/{id} [delete]
+// @Router /api/client/tenders/{tenderId} [delete]
 func (t *Tender) DeleteTender(c *gin.Context) {
 	var req entity.DeleteTenderRequest
 	id, ok := c.Get("user_id")
@@ -212,21 +204,21 @@ func (t *Tender) uploadPDF(c *gin.Context, file *multipart.FileHeader, filename 
 	return err
 }
 
-// GetALlTenders godoc
-// @Summary Get all a tender by ID
-// @Description get all a specific tender by its ID
-// @Tags tenders
-// @Produce json
-// @Success 200 {object} string
-// @Failure 400 {object} string
-// @Failure 500 {object} string
-// @Security Bearer
-// @Router /tendersall [get]
-func (t *Tender) GetALlTenders(c *gin.Context) {
-	res, err := t.tender.GetTenders(c.Request.Context(), entity.GetListTender{})
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, res)
-}
+//// GetALlTenders godoc
+//// @Summary Get all a tender by ID
+//// @Description get all a specific tender by its ID
+//// @Tags tenders
+//// @Produce json
+//// @Success 200 {object} string
+//// @Failure 400 {object} string
+//// @Failure 500 {object} string
+//// @Security Bearer
+//// @Router /api/client/tenders [get]
+//func (t *Tender) GetALlTenders(c *gin.Context) {
+//	res, err := t.tender.GetTenders(c.Request.Context(), entity.GetListTender{})
+//	if err != nil {
+//		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+//		return
+//	}
+//	c.JSON(http.StatusOK, res)
+//}

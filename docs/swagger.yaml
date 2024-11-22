@@ -81,21 +81,15 @@ definitions:
     type: object
   entity.Tender:
     properties:
+      attachment:
+        type: string
       budget:
         type: number
-      client_id:
-        type: string
-      created_at:
-        type: string
       deadline:
         type: string
       description:
         type: string
-      file_attachment:
-        type: string
       id:
-        type: string
-      status:
         type: string
       title:
         type: string
@@ -138,6 +132,120 @@ info:
   description: This is a sample server for a Tender  system.
   version: "1.0"
 paths:
+  /api/client/tenders:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve tenders for the authenticated client
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Tender'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Get tenders
+      tags:
+      - tenders
+    post:
+      consumes:
+      - application/json
+      description: Create a new tender and optionally upload a PDF
+      parameters:
+      - description: Tender data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/entity.CreateTenderRequest'
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Create a new tender
+      tags:
+      - tenders
+  /api/client/tenders/{tenderId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a specific tender by its ID
+      parameters:
+      - description: Tender ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Delete a tender by ID
+      tags:
+      - tenders
+  /api/client/tenders{tenderId}:
+    put:
+      consumes:
+      - application/json
+      description: Update information of a specific Tender by its ID
+      parameters:
+      - description: Tender ID
+        in: path
+        name: tenderId
+        required: true
+        type: string
+      - description: Tender update request body
+        in: body
+        name: tender
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UpdateTenderStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Tender'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Update Tender
+      tags:
+      - tenders
   /login:
     post:
       consumes:
@@ -202,9 +310,9 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Delete a specific tender by its ID
+      description: Delete a specific bid by its ID
       parameters:
-      - description: Tender ID
+      - description: Contractor ID
         in: path
         name: id
         required: true
@@ -226,92 +334,9 @@ paths:
             type: string
       security:
       - Bearer: []
-      summary: Delete a tender by ID
+      summary: Delete a bid by ID
       tags:
-      - tenders
-  /tenders:
-    get:
-      consumes:
-      - application/json
-      description: Retrieve tenders for the authenticated client
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/entity.Tender'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-      security:
-      - Bearer: []
-      summary: Get tenders
-      tags:
-      - tenders
-    post:
-      consumes:
-      - application/json
-      description: Create a new tender and optionally upload a PDF
-      parameters:
-      - description: Tender data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/entity.CreateTenderRequest'
-      responses:
-        "201":
-          description: Created
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-      security:
-      - Bearer: []
-      summary: Create a new tender
-      tags:
-      - tenders
-  /tenders/{id}:
-    put:
-      consumes:
-      - application/json
-      description: Update information of a specific Tender by its ID
-      parameters:
-      - description: Tender ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Tender update request body
-        in: body
-        name: tender
-        required: true
-        schema:
-          $ref: '#/definitions/entity.UpdateTenderStatusRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/entity.Tender'
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      security:
-      - Bearer: []
-      summary: Update Tender
-      tags:
-      - tenders
+      - bid
   /tenders/{id}/bids:
     get:
       consumes:
@@ -441,29 +466,6 @@ paths:
       summary: Announce the winner for a tender
       tags:
       - bid
-  /tendersall:
-    get:
-      description: get all a specific tender by its ID
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      security:
-      - Bearer: []
-      summary: Get all a tender by ID
-      tags:
-      - tenders
 securityDefinitions:
   Bearer:
     description: Enter the token in the format `Bearer {token}`

@@ -23,21 +23,18 @@ func Router(auth authusecase.UserUseCaseImpl, tender tenderusecase.TenderUseCase
 
 	router.POST("/register", authhandler.Register)
 	router.POST("/login", authhandler.LoginUser)
-	
+
 	router.Use(middleware.Middleware)
 	router.Use(middleware.TimingMiddleware)
 
-	
-
-	tenderGroup := router.Group("/")
+	tenderGroup := router.Group("")
 	{
-		tenderGroup.POST("tenders", tenderhandler.CreateTender)
-		tenderGroup.GET("tenders", tenderhandler.GetTenders)
-		tenderGroup.PUT("tenders/:id", tenderhandler.UpdateTenderStatus)
-		tenderGroup.DELETE("tenders/:id", tenderhandler.DeleteTender)
-		tenderGroup.GET("tendersall",tenderhandler.GetALlTenders)
+		tenderGroup.POST("/api/client/tenders", tenderhandler.CreateTender)
+		tenderGroup.PUT("/api/client/tenders/:tenderId", tenderhandler.UpdateTenderStatus)
+		tenderGroup.DELETE("/api/client/tenders/:tenderId", tenderhandler.DeleteTender)
+		tenderGroup.GET("/api/client/tenders", tenderhandler.GetTenders)
 	}
-	bidGroup := router.Group("/")
+	bidGroup := router.Group("")
 	{
 		bidGroup.POST("tenders/:id/bids", bidhandler.CreateBid)
 		bidGroup.GET("tenders/bids/:id", bidhandler.GetBids)
