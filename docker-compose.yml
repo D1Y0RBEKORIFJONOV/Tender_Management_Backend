@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3.8"
 services:
   db:
     image: postgres:14-alpine
@@ -6,9 +6,6 @@ services:
     environment:
       - POSTGRES_PASSWORD=2005
       - PG_URL=postgres://postgres:2005@postgres:5432/postgres?sslmode=disable
-    volumes:
-      - income-db-data:/var/lib/postgresql/data
-      - ./income-service/migrations:/docker-entrypoint-initdb.d
     ports:
       - "5433:5432"
     healthcheck:
@@ -18,7 +15,7 @@ services:
       start_period: 30s
       timeout: 10s
     depends_on:
-      - mongodb
+      - mongo
       - redis
     networks:
       - finance
@@ -26,28 +23,23 @@ services:
   migrate:
     image: migrate/migrate
     volumes:
-      - ./migrations
-    command: ["-path", "/migrations", "-database", "postgres://postgres:2005@postgres:5432/postgres?sslmode=disable", "up"]
+      - ./migrations:/migrations
+    command: ["-path", "/migrations", "-database", "postgres://postgres:2005@postgresdb:5432/postgres?sslmode=disable", "up"]
     depends_on:
       db:
         condition: service_healthy
     networks:
       - finance
 
-  mongodb:
+  mongo:
     image: mongo:latest
-    container_name: mongodb
+    container_name: mongo
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
       - mongo-db-data:/data/db
     networks:
       - finance
-    healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 10s
-      retries: 5
 
   redis:
     container_name: redis_container
@@ -71,14 +63,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      mongodb:
-        condition: service_healthy
       redis:
         condition: service_healthy
     ports:
       - "9006:9006"
     environment:
-      - MONGO_URL=mongo://mongo:27017
       - PG_HOST=postgres
       - PG_PORT=5432
     networks:
@@ -86,6 +75,7 @@ services:
 
 volumes:
   mongo-db-data:
+  migrations:
 
 networks:
   finance:

@@ -21,14 +21,15 @@ func Router(auth authusecase.UserUseCaseImpl, tender tenderusecase.TenderUseCase
 	url := ginSwagger.URL("swagger/doc.json")
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
+	router.POST("/register", authhandler.Register)
+	router.POST("/login", authhandler.LoginUser)
+	
 	router.Use(middleware.Middleware)
 	router.Use(middleware.TimingMiddleware)
 
-	authGroup := router.Group("/")
-	{
-		authGroup.POST("register", authhandler.Register)
-		authGroup.POST("login", authhandler.LoginUser)
-	}
+	
+	
+	
 
 	tenderGroup := router.Group("/")
 	{

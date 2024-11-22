@@ -74,11 +74,6 @@ definitions:
       password:
         type: string
     type: object
-  entity.LoginResponse:
-    properties:
-      token:
-        type: string
-    type: object
   entity.Tender:
     properties:
       budget:
@@ -118,29 +113,14 @@ definitions:
       new_status:
         type: string
     type: object
-  entity.User:
-    properties:
-      email:
-        type: string
-      id:
-        type: string
-      password:
-        type: string
-      role:
-        type: string
-      username:
-        type: string
-    type: object
 info:
   contact: {}
-  description: This is a sample server for a Tender  system.
-  version: "1.0"
 paths:
   /login:
     post:
       consumes:
       - application/json
-      description: Log in a user with email and password
+      description: Log in a user with email/username and password
       parameters:
       - description: Login request body
         in: body
@@ -152,27 +132,40 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Successful login response containing a token
           schema:
-            $ref: '#/definitions/entity.LoginResponse'
+            additionalProperties: true
+            type: object
         "400":
-          description: Bad Request
+          description: Validation error or missing fields
           schema:
-            type: string
+            additionalProperties: true
+            type: object
+        "401":
+          description: Invalid username or password
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: User not found
+          schema:
+            additionalProperties: true
+            type: object
         "500":
-          description: Internal Server Error
+          description: Internal server error
           schema:
-            type: string
-      summary: User login
+            additionalProperties: true
+            type: object
+      summary: Log in a user
       tags:
       - user
   /register:
     post:
       consumes:
       - application/json
-      description: Create a new user
+      description: Register a new user with email, password, role, and username
       parameters:
-      - description: User request body
+      - description: User registration request body
         in: body
         name: user
         required: true
@@ -181,18 +174,26 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Successful registration response containing a token
           schema:
-            $ref: '#/definitions/entity.User'
+            additionalProperties: true
+            type: object
         "400":
-          description: Bad Request
+          description: Validation error or missing fields
           schema:
-            type: string
+            additionalProperties: true
+            type: object
+        "409":
+          description: Email already exists
+          schema:
+            additionalProperties: true
+            type: object
         "500":
-          description: Internal Server Error
+          description: Internal server error
           schema:
-            type: string
+            additionalProperties: true
+            type: object
       summary: Create a new user
       tags:
       - user
@@ -462,10 +463,4 @@ paths:
       summary: Get all a tender by ID
       tags:
       - tender
-securityDefinitions:
-  Bearer:
-    description: Enter the token in the format `Bearer {token}`
-    in: header
-    name: Authorization
-    type: apiKey
 swagger: "2.0"
