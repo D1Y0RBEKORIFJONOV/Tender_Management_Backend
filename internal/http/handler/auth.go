@@ -1,11 +1,11 @@
 package handler
 
 import (
+	_ "awesomeProject/docs"
 	"awesomeProject/internal/entity"
 	authusecase "awesomeProject/internal/usecase/auth"
-	"net/http"
-	_ "awesomeProject/docs"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type Auth struct {
@@ -43,12 +43,12 @@ func (u *Auth) Register(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	user, err := u.auth.RegisterUser(c.Request.Context(), req)
+	token, err := u.auth.RegisterUser(c.Request.Context(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, token)
 }
 
 // LoginUser godoc
@@ -69,11 +69,11 @@ func (u *Auth) LoginUser(c *gin.Context) {
 		return
 	}
 
-	message, err := u.auth.LoginUser(c.Request.Context(), req)
+	token, err := u.auth.LoginUser(c.Request.Context(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": message})
+	c.JSON(http.StatusOK, token)
 }

@@ -28,8 +28,6 @@ func Router(auth authusecase.UserUseCaseImpl, tender tenderusecase.TenderUseCase
 	router.Use(middleware.TimingMiddleware)
 
 	
-	
-	
 
 	tenderGroup := router.Group("/")
 	{

@@ -16,6 +16,7 @@ import (
 	bidusecase "awesomeProject/internal/usecase/bid"
 	notificationusecase "awesomeProject/internal/usecase/notification"
 	tenderusecase "awesomeProject/internal/usecase/tender"
+	"log"
 	"log/slog"
 )
 
@@ -26,7 +27,10 @@ type App struct {
 func NewApp(logger *slog.Logger, cfg *config.Config) *App {
 	redisDb := redisrepository.NewRedis(*cfg)
 
-	dbAuth := userrepo.NewUserRepository()
+	dbAuth, err := userrepo.NewUserRepository()
+	if err != nil {
+		log.Fatalln(err)
+	}
 	mongoDb, err := mongodb.NewMongoDB(cfg, logger)
 	if err != nil {
 		panic(err)
