@@ -9,7 +9,7 @@ type (
 		Password string `json:"password" bson:"password"`
 		Email    string `json:"email" bson:"email"`
 		Role     string `json:"role" bson:"role"`
-		Token    string `json: "token" bson:"token"`
+		Token    string `json:"token" bson:"token"`
 	}
 	CreateUsrRequest struct {
 		Username string `json:"username"`
