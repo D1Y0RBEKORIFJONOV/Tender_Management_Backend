@@ -4,8 +4,8 @@ services:
     image: postgres:14-alpine
     container_name: postgresdb
     environment:
-      - POSTGRES_PASSWORD=Abdu0811
-      - PG_URL=postgres://postgres:Abdu0811@postgres:5432/postgres?sslmode=disable
+      - POSTGRES_PASSWORD=2005
+      - PG_URL=postgres://postgres:2005@postgres:5432/postgres?sslmode=disable
     ports:
       - "5433:5432"
     healthcheck:
@@ -24,7 +24,7 @@ services:
     image: migrate/migrate
     volumes:
       - ./migrations:/migrations
-    command: ["-path", "/migrations", "-database", "postgres://postgres:Abdu0811@postgresdb:5432/postgres?sslmode=disable", "up"]
+    command: ["-path", "/migrations", "-database", "postgres://postgres:2005@postgresdb:5432/postgres?sslmode=disable", "up"]
     depends_on:
       db:
         condition: service_healthy
