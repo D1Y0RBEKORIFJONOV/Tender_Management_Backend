@@ -1,4 +1,3 @@
-basePath: /
 definitions:
   entity.AnnounceWinnerRequest:
     properties:
@@ -70,9 +69,9 @@ definitions:
     type: object
   entity.LoginRequest:
     properties:
-      email:
-        type: string
       password:
+        type: string
+      username:
         type: string
     type: object
   entity.LoginResponse:
@@ -134,11 +133,9 @@ definitions:
       username:
         type: string
     type: object
-host: 52.59.220.158:9006
 info:
   contact: {}
   description: This is a sample server for a Tender  system.
-  title: Artisan Connect
   version: "1.0"
 paths:
   /login:
@@ -231,7 +228,7 @@ paths:
       - Bearer: []
       summary: Delete a tender by ID
       tags:
-      - tender
+      - tenders
   /tenders:
     get:
       consumes:
@@ -314,7 +311,7 @@ paths:
       - Bearer: []
       summary: Update Tender
       tags:
-      - product
+      - tenders
   /tenders/{id}/bids:
     get:
       consumes:
@@ -466,14 +463,8 @@ paths:
       - Bearer: []
       summary: Get all a tender by ID
       tags:
-      - tender
-schemes:
-- https
+      - tenders
 securityDefinitions:
-  ApiKeyAuth:
-    in: header
-    name: Authorization
-    type: apiKey
   Bearer:
     description: Enter the token in the format `Bearer {token}`
     in: header

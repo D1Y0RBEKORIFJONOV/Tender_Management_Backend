@@ -122,7 +122,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "tender"
+                    "tenders"
                 ],
                 "summary": "Delete a tender by ID",
                 "parameters": [
@@ -245,7 +245,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "product"
+                    "tenders"
                 ],
                 "summary": "Update Tender",
                 "parameters": [
@@ -505,7 +505,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "tender"
+                    "tenders"
                 ],
                 "summary": "Get all a tender by ID",
                 "responses": {
@@ -640,10 +640,10 @@ const docTemplate = `{
         "entity.LoginRequest": {
             "type": "object",
             "properties": {
-                "email": {
+                "password": {
                     "type": "string"
                 },
-                "password": {
+                "username": {
                     "type": "string"
                 }
             }
@@ -741,11 +741,6 @@ const docTemplate = `{
         }
     },
     "securityDefinitions": {
-        "ApiKeyAuth": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
-        },
         "Bearer": {
             "description": "Enter the token in the format ` + "`" + `Bearer {token}` + "`" + `",
             "type": "apiKey",
@@ -758,10 +753,10 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "52.59.220.158:9006",
-	BasePath:         "/",
-	Schemes:          []string{"https"},
-	Title:            "Artisan Connect",
+	Host:             "",
+	BasePath:         "",
+	Schemes:          []string{},
+	Title:            "",
 	Description:      "This is a sample server for a Tender  system.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

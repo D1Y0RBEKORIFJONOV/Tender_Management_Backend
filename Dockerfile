@@ -17,5 +17,8 @@ WORKDIR /app
 
 COPY --from=builder /app/main .
 
+COPY auth.conf /app/auth.conf
+COPY auth.csv /app/auth.csv
+
 
 CMD ["./main"]

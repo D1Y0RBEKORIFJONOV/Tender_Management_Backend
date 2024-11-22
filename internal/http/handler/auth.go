@@ -18,16 +18,6 @@ func NewAuth(auth authusecase.UserUseCaseImpl) *Auth {
 	return &Auth{auth: auth}
 }
 
-// @title Artisan Connect
-// @version 1.0
-// @description This is a sample server for a restaurant reservation system.
-// @host 52.59.220.158:9006
-// @BasePath        /
-// @schemes         https
-// @securityDefinitions.apiKey ApiKeyAuth
-// @in              header
-// @name            Authorization
-
 // @Tender
 // @version 1.0
 // @description This is a sample server for a Tender  system.
@@ -60,6 +50,10 @@ func (u *Auth) Register(c *gin.Context) {
 		})
 		return
 	}
+	if !(req.Role == "client" || req.Role == "contractor") {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid role"})
+		return
+	}
 
 	// Check if the email or username is empty
 	if req.Email == "" || req.Username == "" {
@@ -68,19 +62,18 @@ func (u *Auth) Register(c *gin.Context) {
 		})
 		return
 	}
-
+	if !isValidEmail(req.Email) {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid email format"})
+		return
+	}
 	// Register the user
 	token, err := u.auth.RegisterUser(c.Request.Context(), req)
 	if err != nil {
 		// Handle specific error cases from RegisterUser function
 		switch {
 		case strings.Contains(err.Error(), "Email already exists"):
-			c.JSON(http.StatusBadRequest, gin.H{
+			c.JSON(400, gin.H{
 				"message": "Email already exists",
-			})
-		case strings.Contains(err.Error(), "invalid email format"):
-			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "invalid email format",
 			})
 		case strings.Contains(err.Error(), "invalid role"):
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -88,7 +81,7 @@ func (u *Auth) Register(c *gin.Context) {
 			})
 		default:
 			// For all other errors
-			c.JSON(http.StatusInternalServerError, gin.H{
+			c.JSON(500, gin.H{
 				"message": "Registration failed",
 			})
 		}
@@ -103,7 +96,6 @@ func (u *Auth) Register(c *gin.Context) {
 
 // Helper function to validate email format
 func isValidEmail(email string) bool {
-	// Simple regex to validate email format
 	re := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
 	return re.MatchString(email)
 }
@@ -127,18 +119,24 @@ func (u *Auth) LoginUser(c *gin.Context) {
 		})
 		return
 	}
+	if req.Email == "" || req.Password == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Username and password are required"})
+		return
+	}
 
 	message, err := u.auth.LoginUser(c.Request.Context(), req)
 	if err != nil {
 		switch err.Error() {
-		case "invalid credentials":
+		case "Invalid username or password":
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"message": "Invalid username or password",
 			})
-		case "user not found":
+			return
+		case "User not found":
 			c.JSON(http.StatusNotFound, gin.H{
 				"message": "User not found",
 			})
+			return
 		default:
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": err.Error(),

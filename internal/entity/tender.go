@@ -18,12 +18,12 @@ type (
 		ClientID       string    `json:"-" bson:"client_id" `
 		Title          string    `json:"title" bson:"title" `
 		Description    string    `json:"description" bson:"description" `
-		Deadline       time.Time  `json:"deadline" bson:"deadline" `
+		Deadline       time.Time `json:"deadline" bson:"deadline" `
 		Budget         float64   `json:"budget" bson:"budget"`
 		FileAttachment string    `json:"-" bson:"file_attachment,omitempty"`
 		CreatedAt      time.Time `json:"-" bson:"created_at"`
 	}
-
+	
 	GetListTender struct {
 		Limit int
 		Page  int

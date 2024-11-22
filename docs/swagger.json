@@ -1,16 +1,10 @@
 {
-    "schemes": [
-        "https"
-    ],
     "swagger": "2.0",
     "info": {
         "description": "This is a sample server for a Tender  system.",
-        "title": "Artisan Connect",
         "contact": {},
         "version": "1.0"
     },
-    "host": "52.59.220.158:9006",
-    "basePath": "/",
     "paths": {
         "/login": {
             "post": {
@@ -119,7 +113,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "tender"
+                    "tenders"
                 ],
                 "summary": "Delete a tender by ID",
                 "parameters": [
@@ -242,7 +236,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "product"
+                    "tenders"
                 ],
                 "summary": "Update Tender",
                 "parameters": [
@@ -502,7 +496,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "tender"
+                    "tenders"
                 ],
                 "summary": "Get all a tender by ID",
                 "responses": {
@@ -637,10 +631,10 @@
         "entity.LoginRequest": {
             "type": "object",
             "properties": {
-                "email": {
+                "password": {
                     "type": "string"
                 },
-                "password": {
+                "username": {
                     "type": "string"
                 }
             }
@@ -738,11 +732,6 @@
         }
     },
     "securityDefinitions": {
-        "ApiKeyAuth": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
-        },
         "Bearer": {
             "description": "Enter the token in the format `Bearer {token}`",
             "type": "apiKey",

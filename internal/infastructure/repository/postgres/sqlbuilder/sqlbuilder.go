@@ -31,7 +31,7 @@ func CreateUser(req *entity.CreateUsrRequest) (string, []interface{}, error) {
 
 func HaveUser(req string) (string, []interface{}, error) {
 	query, args, err := squirrel.
-		Select("EXISTS(SELECT *").From("users").Where(squirrel.Eq{"username": req}).
+		Select("EXISTS(SELECT *").From("users").Where(squirrel.Eq{"email": req}).
 		PlaceholderFormat(squirrel.Dollar).
 		Suffix(")").
 		ToSql()
@@ -44,7 +44,7 @@ func HaveUser(req string) (string, []interface{}, error) {
 
 func Getuser(req string) (string, []interface{}, error) {
 	query, args, err := squirrel.Select("*").From("users").
-		Where(squirrel.Eq{"email": req}).
+		Where(squirrel.Eq{"username": req}).
 		PlaceholderFormat(squirrel.Dollar).
 		ToSql()
 	if err != nil {

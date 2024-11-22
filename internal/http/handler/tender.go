@@ -72,6 +72,7 @@ func (t *Tender) CreateTender(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
 	req.ClientID = id.(string)
 
 	file, _ := c.FormFile("pdf")
@@ -90,7 +91,7 @@ func (t *Tender) CreateTender(c *gin.Context) {
 		newFileName := uuid.NewString() + ext
 		err := t.uploadPDF(c, file, newFileName)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error1": err.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 		req.FileAttachment = newFileName
@@ -98,11 +99,11 @@ func (t *Tender) CreateTender(c *gin.Context) {
 
 	message, err := t.tender.CreateTender(c.Request.Context(), req)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error2": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, message)
+	c.JSON(http.StatusCreated, gin.H{"message": "Tender created successfully", "data": message})
 }
 
 // GetTenders godoc
@@ -118,27 +119,25 @@ func (t *Tender) GetTenders(c *gin.Context) {
 	var req entity.GetListTender
 	id, ok := c.Get("user_id")
 	if !ok {
-	  c.JSON(http.StatusBadRequest, gin.H{"error": "user_id not found"})
-	  return
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user_id not found"})
+		return
 	}
 	if req.Value == "" {
-	  req.Field = "client_id"
-	  req.Value = id.(string)
+		req.Field = "client_id"
+		req.Value = id.(string)
 	}
 	res, err := t.tender.GetTenders(c.Request.Context(), req)
 	if err != nil {
-	  c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	  return
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 	c.JSON(http.StatusOK, res)
-  }
-  
-
+}
 
 // UpdateTenderStatus godoc
 // @Summary Update Tender
 // @Description Update information of a specific Tender by its ID
-// @Tags product
+// @Tags tenders
 // @Accept json
 // @Produce json
 // @Param id path string true "Tender ID"
@@ -174,7 +173,7 @@ func (t *Tender) UpdateTenderStatus(c *gin.Context) {
 // DeleteTender godoc
 // @Summary Delete a tender by ID
 // @Description Delete a specific tender by its ID
-// @Tags tender
+// @Tags tenders
 // @Accept json
 // @Produce json
 // @Param id path string true "Tender ID"
@@ -216,7 +215,7 @@ func (t *Tender) uploadPDF(c *gin.Context, file *multipart.FileHeader, filename 
 // GetALlTenders godoc
 // @Summary Get all a tender by ID
 // @Description get all a specific tender by its ID
-// @Tags tender
+// @Tags tenders
 // @Produce json
 // @Success 200 {object} string
 // @Failure 400 {object} string
