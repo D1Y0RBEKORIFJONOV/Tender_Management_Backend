@@ -33,7 +33,7 @@ type (
 		UserID  string `json:"user_id"`
 	}
 	LoginRequest struct {
-		Email    string `json:"email"`
+		Email    string `json:"username"`
 		Password string `json:"password"`
 	}
 	LoginResponse struct {

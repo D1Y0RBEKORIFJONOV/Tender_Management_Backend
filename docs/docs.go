@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/login": {
             "post": {
-                "description": "Log in a user with email/username and password",
+                "description": "Log in a user with email and password",
                 "consumes": [
                     "application/json"
                 ],
@@ -27,7 +27,7 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "Log in a user",
+                "summary": "User login",
                 "parameters": [
                     {
                         "description": "Login request body",
@@ -41,38 +41,21 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful login response containing a token",
+                        "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/entity.LoginResponse"
                         }
                     },
                     "400": {
-                        "description": "Validation error or missing fields",
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid username or password",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "404": {
-                        "description": "User not found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "type": "string"
                         }
                     },
                     "500": {
-                        "description": "Internal server error",
+                        "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "type": "string"
                         }
                     }
                 }
@@ -80,7 +63,7 @@ const docTemplate = `{
         },
         "/register": {
             "post": {
-                "description": "Register a new user with email, password, role, and username",
+                "description": "Create a new user",
                 "consumes": [
                     "application/json"
                 ],
@@ -93,7 +76,7 @@ const docTemplate = `{
                 "summary": "Create a new user",
                 "parameters": [
                     {
-                        "description": "User registration request body",
+                        "description": "User request body",
                         "name": "user",
                         "in": "body",
                         "required": true,
@@ -103,32 +86,22 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Successful registration response containing a token",
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/entity.User"
                         }
                     },
                     "400": {
-                        "description": "Validation error or missing fields",
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "409": {
-                        "description": "Email already exists",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "type": "string"
                         }
                     },
                     "500": {
-                        "description": "Internal server error",
+                        "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "type": "string"
                         }
                     }
                 }
@@ -675,6 +648,14 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Tender": {
             "type": "object",
             "properties": {
@@ -734,22 +715,58 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "entity.User": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        },
+        "Bearer": {
+            "description": "Enter the token in the format ` + "`" + `Bearer {token}` + "`" + `",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
-	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Version:          "1.0",
+	Host:             "52.59.220.158:9006",
+	BasePath:         "/",
+	Schemes:          []string{"https"},
+	Title:            "Artisan Connect",
+	Description:      "This is a sample server for a Tender  system.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	// LeftDelim:        "{{",
-	// RightDelim:       "}}",
+	//LeftDelim:        "{{",
+	//RightDelim:       "}}",
 }
 
 func init() {

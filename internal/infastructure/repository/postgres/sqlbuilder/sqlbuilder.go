@@ -31,7 +31,7 @@ func CreateUser(req *entity.CreateUsrRequest) (string, []interface{}, error) {
 
 func HaveUser(req string) (string, []interface{}, error) {
 	query, args, err := squirrel.
-		Select("EXISTS(SELECT *").From("users").Where(squirrel.Eq{"email": req}).
+		Select("EXISTS(SELECT *").From("users").Where(squirrel.Eq{"username": req}).
 		PlaceholderFormat(squirrel.Dollar).
 		Suffix(")").
 		ToSql()
@@ -70,26 +70,26 @@ func CreateTender(req *entity.CreateTenderRequest) (string, []interface{}, error
 
 func GetListTender(req *entity.GetListTender) (string, []interface{}, error) {
 	queryBuilder := squirrel.
-	  Select("*").
-	  From("tenders").
-	  PlaceholderFormat(squirrel.Dollar)
-  
+		Select("*").
+		From("tenders").
+		PlaceholderFormat(squirrel.Dollar)
+
 	if req.Field != "" && req.Value != "" {
-	  queryBuilder = queryBuilder.Where(squirrel.Eq{req.Field: req.Value})
+		queryBuilder = queryBuilder.Where(squirrel.Eq{req.Field: req.Value})
 	}
-  
+
 	if req.Limit > 0 && req.Page > 0 {
-	  offset := (req.Page - 1) * req.Limit
-	  queryBuilder = queryBuilder.Limit(uint64(req.Limit)).Offset(uint64(offset))
+		offset := (req.Page - 1) * req.Limit
+		queryBuilder = queryBuilder.Limit(uint64(req.Limit)).Offset(uint64(offset))
 	}
-  
+
 	query, args, err := queryBuilder.ToSql()
 	if err != nil {
-	  return "", nil, fmt.Errorf("error generating tenders query: %v", err)
+		return "", nil, fmt.Errorf("error generating tenders query: %v", err)
 	}
-  
+
 	return query, args, nil
-  }
+}
 
 // func GetValidTenders() (string, []interface{}, error) {
 // 	query, args, err := squirrel.

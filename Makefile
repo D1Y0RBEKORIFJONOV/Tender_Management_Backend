@@ -1,4 +1,4 @@
-DB_URL=postgres://postgres:Abdu0811@postgresdb:5432/udevs?sslmode=disable
+DB_URL=postgres://postgres:2005@postgresdb:5432/postgres?sslmode=disable
 
 
 migrate:

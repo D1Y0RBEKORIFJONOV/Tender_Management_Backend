@@ -41,7 +41,7 @@ func (a *Auth) RegisterUser(ctx context.Context, req entity.CreateUsrRequest) (t
 	ok, err := a.auth.IsHaveUser(ctx, req.Email)
 	if err != nil {
 		log.Error("err", err.Error())
-		return "", err
+		return "", errors.New("Email already exists")
 	}
 	if ok {
 		return "", nil
@@ -90,12 +90,12 @@ func (a *Auth) LoginUser(ctx context.Context, req entity.LoginRequest) (token st
 	if err != nil {
 		log.Error("err", req.Email)
 		log.Error("err", err.Error())
-		return "", err
+		return "", errors.New("User not found")
 	}
 	log.Info(fmt.Sprintf("req: %v", req))
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
 		log.Error("Failed to Login", err.Error())
-		return "", errors.New("invalid password")
+		return "", errors.New("invalid credentials")
 	}
 	log.Info("Successfully logged in")
 	token, _, err = token2.GenerateTokens(user)
