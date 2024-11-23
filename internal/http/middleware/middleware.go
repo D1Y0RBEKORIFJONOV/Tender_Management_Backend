@@ -3,23 +3,25 @@ package middleware
 import (
 	"awesomeProject/internal/infastructure/token"
 	"fmt"
-	"github.com/casbin/casbin/v2"
 	"log"
 	"net/http"
 	"strings"
 	"time"
 
+	"github.com/casbin/casbin/v2"
+	"golang.org/x/time/rate"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 )
 
-//var (
-//	rateLimiters = map[string]*rate.Limiter{
-//		"client":       rate.NewLimiter(5.0/60.0, 20),
-//		"contractor":   rate.NewLimiter(5.0/60.0, 20),
-//		"unauthorized": rate.NewLimiter(5.0/60.0, 20),
-//	}
-//)
+var (
+	rateLimiters = map[string]*rate.Limiter{
+		"client":       rate.NewLimiter(5.0/60.0, 20),
+		"contractor":   rate.NewLimiter(5.0/60.0, 20),
+		"unauthorized": rate.NewLimiter(5.0/60.0, 20),
+	}
+)
 
 func Middleware(c *gin.Context) {
 	allow, err := CheckPermission(c.Request)
@@ -49,18 +51,18 @@ func Middleware(c *gin.Context) {
 		return
 	}
 
-	//role, _ := GetRole(c.Request)
-	//limiter, exists := rateLimiters[role]
-	//if !exists {
-	//	limiter = rateLimiters["unauthorized"]
-	//}
+	role, _ := GetRole(c.Request)
+	limiter, exists := rateLimiters[role]
+	if !exists {
+		limiter = rateLimiters["unauthorized"]
+	}
 
-	//if !limiter.Allow() {
-	//	c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{
-	//		"error": "rate limit exceeded",
-	//	})
-	//	return
-	//}
+	if !limiter.Allow() {
+		c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{
+			"error": "rate limit exceeded",
+		})
+		return
+	}
 
 	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")

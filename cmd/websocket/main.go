@@ -27,6 +27,5 @@ func main() {
 	server := websocket.NewServer(notificationService)
 
 	http.HandleFunc("/ws", server.HandlerNotification)
-	log.Println("Listening on :9005")
 	log.Fatal(http.ListenAndServe(":9005", nil))
 }

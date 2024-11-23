@@ -703,7 +703,7 @@
         "entity.UpdateTenderStatusRequest": {
             "type": "object",
             "properties": {
-                "status": {
+                "new_status": {
                     "type": "string"
                 }
             }

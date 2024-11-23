@@ -25,7 +25,7 @@ func NewAuth(auth authusecase.UserUseCaseImpl) *Auth {
 // @in 				header
 // @name Authorization
 // @description Enter the token in the format `Bearer {token}`
-// @host localhost:9006
+// @host localhost:8888
 // @BasePath /
 
 // Register godoc

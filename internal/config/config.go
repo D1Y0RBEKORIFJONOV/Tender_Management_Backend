@@ -55,12 +55,7 @@ type Config struct {
 			UpdateEmail    []byte
 			UpdatePassword []byte
 		}
-		IncomeCreate   string
-		ExpensesCreate string
 	}
-	BudgetServiceUrl string
-	IncomeServiceUrl string
-	ReportUcl        string
 }
 
 func Token() string {
@@ -73,12 +68,12 @@ func New() *Config {
 	var config Config
 
 	config.Database.User = getEnv("User", "postgres")
-	config.Database.Password = getEnv("Password", "+_+diyor2005+_+")
-	config.Database.Host = getEnv("Host", "localhost")
+	config.Database.Password = getEnv("Password", "Abdu0811")
+	config.Database.Host = getEnv("Host", "postgresdb")
 	config.Database.Port = getEnv("Port", "5432")
-	config.Database.Dbname = getEnv("Dbname", "udevs")
+	config.Database.Dbname = getEnv("Dbname", "postgres")
 	config.DB.CollectionName = "notifications"
-	config.DB.Host = getEnv("DB_HOST", "localhost")
+	config.DB.Host = getEnv("DB_HOST", "mongo")
 	config.DB.Port = getEnv("DB_PORT", ":27017")
 	config.DB.User = getEnv("DB_USER", "postgres")
 	config.DB.Password = getEnv("DB_PASSWORD", "postgres")
@@ -86,7 +81,7 @@ func New() *Config {
 	config.APP = getEnv("APP", "app")
 	config.Environment = getEnv("ENVIRONMENT", "develop")
 	config.LogLevel = getEnv("LOG_LEVEL", "local")
-	config.RPCPort = getEnv("RPC_PORT", "localhost:9006")
+	config.RPCPort = getEnv("RPC_PORT", "myapp_app:8888")
 	config.Context.Timeout = getEnv("CONTEXT_TIMEOUT", "30s")
 
 	config.Token.Secret = getEnv("TOKEN_SECRET", "D1YORTOP4EEK")
@@ -102,9 +97,8 @@ func New() *Config {
 	config.Token.RefreshTTL = refreshTTL
 
 	config.NotificationUrl = getEnv("Notification_URL", "notification_service:9001")
-	config.RedisURL = getEnv("REDIS_URL", "localhost:6379")
+	config.RedisURL = getEnv("REDIS_URL", "redis_container:6379")
 
-	config.ReportUcl = getEnv("REPORT_UCL", "localhost:8000")
 	config.Email.SmtHost = getEnv("SMT_HOST", "smtp.gmail.com")
 	config.Email.SmtPort = getEnv("SMTP_PORT", "587")
 	config.Email.From = getEnv("EMAIL_FROM", "diyordev3@gmail.com")

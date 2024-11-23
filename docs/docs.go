@@ -712,7 +712,7 @@ const docTemplate = `{
         "entity.UpdateTenderStatusRequest": {
             "type": "object",
             "properties": {
-                "status": {
+                "new_status": {
                     "type": "string"
                 }
             }
@@ -761,8 +761,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "This is a sample server for a Tender  system.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	//LeftDelim:        "{{",
-	//RightDelim:       "}}",
+	// LeftDelim:        "{{",
+	// RightDelim:       "}}",
 }
 
 func init() {

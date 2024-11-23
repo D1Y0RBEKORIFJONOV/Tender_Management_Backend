@@ -109,7 +109,7 @@ definitions:
     type: object
   entity.UpdateTenderStatusRequest:
     properties:
-      status:
+      new_status:
         type: string
     type: object
   entity.User:

@@ -1,4 +1,4 @@
-DB_URL=postgres://postgres:+_+diyor2005+_+@localhost:5432/udevs?sslmode=disable
+DB_URL=postgres://postgres:Abdu0811@localhost:5432/postgres?sslmode=disable
 
 
 migrate:
@@ -11,15 +11,15 @@ migrateforce:
 	migrate -path migrations -database ${DB_URL} force
 
 run_db:
-	 docker compose up -d db
+	sudo docker compose up -d db
 
 run:
-	 docker compose up --build
+	sudo docker compose up --build
 
 stop:
-	docker-compose down
+	sudo docker-compose down
 
 clean:
-	 docker-compose down -v
+	sudo docker-compose down -v
 swag:
 	swag init -g internal/http/handler/auth.go
