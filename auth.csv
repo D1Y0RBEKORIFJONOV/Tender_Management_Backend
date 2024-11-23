@@ -2,9 +2,7 @@ p, unauthorized, /register, POST
 p, unauthorized, /login, POST
 p, client, /api/client/tenders, POST
 p, client, /api/client/tenders, GET
-p, client, /api/client/tenders{tenderId}, PUT
+p, client, /api/client/tenders/*, PUT
 p, client, /api/client/tenders/*, DELETE
 p, contractor, /tenders/*, GET
-p, contractor, /tenders/*, POST
 p, unauthorized, /swagger/*, GET
-

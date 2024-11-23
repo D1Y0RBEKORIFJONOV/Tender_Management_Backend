@@ -109,7 +109,7 @@ definitions:
     type: object
   entity.UpdateTenderStatusRequest:
     properties:
-      new_status:
+      status:
         type: string
     type: object
   entity.User:
@@ -209,7 +209,6 @@ paths:
       summary: Delete a tender by ID
       tags:
       - tenders
-  /api/client/tenders{tenderId}:
     put:
       consumes:
       - application/json

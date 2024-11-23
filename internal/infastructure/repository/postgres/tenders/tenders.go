@@ -7,7 +7,7 @@ import (
 	tenderusecase "awesomeProject/internal/usecase/tender"
 	"awesomeProject/logger"
 	"context"
-	"log"
+	"errors"
 )
 
 type TenderRepository struct {
@@ -70,7 +70,6 @@ func (u *TenderRepository) UpdateTenderStatus(ctx context.Context, req *entity.U
 		return nil, err
 	}
 	var tender entity.Tender
-	log.Fatal(query, args)
 	if err := u.db.Db.QueryRow(query, args...).Scan(&tender.ID, &tender.ClientID, &tender.Title, &tender.Description, &tender.Deadline, &tender.Budget, &tender.Status, &tender.FileAttachment, &tender.CreatedAt); err != nil {
 		logger.SetupLogger(err.Error())
 		return nil, err
@@ -87,12 +86,7 @@ func (u *TenderRepository) DeleteTender(ctx context.Context, req *entity.DeleteT
 
 	_, err = u.db.Db.Exec(query, args...)
 	if err != nil {
-		if err != nil {
-			logger.SetupLogger(err.Error())
-			return err
-		}
-		logger.SetupLogger(err.Error())
-		return err
+		return errors.New("Tender not found or access denied")
 	}
 	return nil
 }

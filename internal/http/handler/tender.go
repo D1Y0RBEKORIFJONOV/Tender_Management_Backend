@@ -76,6 +76,10 @@ func (t *Tender) CreateTender(c *gin.Context) {
 		})
 		return
 	}
+	if req.Deadline.IsZero() || req.Budget <= 0 {
+		c.JSON(400, gin.H{"message": "Invalid tender data"})
+		return
+	}
 
 	if err := validate.Struct(req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -109,7 +113,6 @@ func (t *Tender) GetTenders(c *gin.Context) {
 	var req entity.GetListTender
 	id, ok := c.Get("user_id")
 	if !ok {
-		log.Println("SUKAAAAAAAAAAAAAAAAAAAAQQQQ:")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user_id not found"})
 		return
 	}
@@ -119,7 +122,6 @@ func (t *Tender) GetTenders(c *gin.Context) {
 	}
 	res, err := t.tender.GetTenders(c.Request.Context(), req)
 	if err != nil {
-		log.Println("SUKAAAAAAAAAAAAAAAAAAAA:", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -138,28 +140,37 @@ func (t *Tender) GetTenders(c *gin.Context) {
 // @Failure 400 {object} string
 // @Failure 500 {object} string
 // @Security Bearer
-// @Router /api/client/tenders{tenderId} [put]
+// @Router /api/client/tenders/{tenderId} [put]
 func (t *Tender) UpdateTenderStatus(c *gin.Context) {
 	var req entity.UpdateTenderStatusRequest
 	id, ok := c.Get("user_id")
 	if !ok {
+		log.Println("11111111111111111111111111111111111")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user_id not found"})
 		return
 	}
+	if req.NewStatus == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid tender status"})
+		return
+	}
 
+	// Биндинг данных из тела запроса
 	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Println("222222222222222222222222222", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
 	req.ID = c.Param("tenderId")
 	req.ClientID = id.(string)
-
-	res, err := t.tender.UpdateTenderStatus(c.Request.Context(), req)
+	log.Println("REEEEEEEEEEEEEEEEEEQ", req.NewStatus, req.ID, req.ClientID)
+	_, err := t.tender.UpdateTenderStatus(c.Request.Context(), req)
 	if err != nil {
+		log.Println("3333333333333333333333333333333333333333", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusOK, gin.H{"message": "Tender status updated"})
 }
 
 // DeleteTender godoc
@@ -183,12 +194,12 @@ func (t *Tender) DeleteTender(c *gin.Context) {
 	}
 	req.ClientID = id.(string)
 
-	res, err := t.tender.DeleteTender(c.Request.Context(), req)
+	_, err := t.tender.DeleteTender(c.Request.Context(), req)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(404, gin.H{"message": "Tender not found or access denied"})
 		return
 	}
-	c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusOK, gin.H{"message": "Tender deleted successfully"})
 }
 
 func (t *Tender) uploadPDF(c *gin.Context, file *multipart.FileHeader, filename string) error {
