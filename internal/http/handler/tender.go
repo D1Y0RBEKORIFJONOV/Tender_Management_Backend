@@ -153,8 +153,7 @@ func (t *Tender) UpdateTenderStatus(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid tender status"})
 		return
 	}
-
-	// Биндинг данных из тела запроса
+	
 	if err := c.ShouldBindJSON(&req); err != nil {
 		log.Println("222222222222222222222222222", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

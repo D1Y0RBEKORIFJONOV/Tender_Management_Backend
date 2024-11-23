@@ -24,20 +24,17 @@ func Router(auth authusecase.UserUseCaseImpl, tender tenderusecase.TenderUseCase
 	router.POST("/register", authhandler.Register)
 	router.POST("/login", authhandler.LoginUser)
 
-	// Middleware для авторизации и проверки разрешений
 	router.Use(middleware.Middleware)
 	router.Use(middleware.TimingMiddleware)
 
-	// Группа для работы с тендерами
 	tenderGroup := router.Group("")
 	{
 		tenderGroup.POST("/api/client/tenders", tenderhandler.CreateTender)
-		tenderGroup.PUT("/api/client/tenders/:tenderId", tenderhandler.UpdateTenderStatus) // Здесь происходит проверка прав
+		tenderGroup.PUT("/api/client/tenders/:tenderId", tenderhandler.UpdateTenderStatus) 
 		tenderGroup.DELETE("/api/client/tenders/:tenderId", tenderhandler.DeleteTender)
 		tenderGroup.GET("/api/client/tenders", tenderhandler.GetTenders)
 	}
 
-	// Группа для работы с заявками на тендеры
 	bidGroup := router.Group("")
 	{
 		bidGroup.POST("tenders/:id/bids", bidhandler.CreateBid)

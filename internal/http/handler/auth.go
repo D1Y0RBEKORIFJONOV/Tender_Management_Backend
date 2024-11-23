@@ -42,9 +42,8 @@ func NewAuth(auth authusecase.UserUseCaseImpl) *Auth {
 func (u *Auth) Register(c *gin.Context) {
 	var req entity.CreateUsrRequest
 
-	// Bind the incoming JSON request
 	if err := c.ShouldBindJSON(&req); err != nil {
-		// Handle missing fields or incorrect JSON
+		
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "username or email cannot be empty",
 		})
@@ -55,7 +54,6 @@ func (u *Auth) Register(c *gin.Context) {
 		return
 	}
 
-	// Check if the email or username is empty
 	if req.Email == "" || req.Username == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "username or email cannot be empty",
@@ -66,10 +64,8 @@ func (u *Auth) Register(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid email format"})
 		return
 	}
-	// Register the user
 	token, err := u.auth.RegisterUser(c.Request.Context(), req)
 	if err != nil {
-		// Handle specific error cases from RegisterUser function
 		switch {
 		case strings.Contains(err.Error(), "Email already exists"):
 			c.JSON(400, gin.H{
@@ -80,7 +76,6 @@ func (u *Auth) Register(c *gin.Context) {
 				"message": "invalid role",
 			})
 		default:
-			// For all other errors
 			c.JSON(500, gin.H{
 				"message": "Registration failed",
 			})
@@ -88,13 +83,11 @@ func (u *Auth) Register(c *gin.Context) {
 		return
 	}
 
-	// If registration is successful, return the token
 	c.JSON(http.StatusCreated, gin.H{
 		"token": token,
 	})
 }
 
-// Helper function to validate email format
 func isValidEmail(email string) bool {
 	re := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
 	return re.MatchString(email)
